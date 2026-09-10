@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WALLFORM</title>
+</head>
+<body>
+  <p>Adding to cart...</p>
 
+  <script>
+    const products = {
+      "WF-001": "911 GT3 RS Wall Decor",
+      "WF-002": "F1 Stand",
+      "WF-003": "Japanese Escape",
+      "WF-004": "McLaren Logo"
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("add");
+
+    if (products[code]) {
+      let cart = JSON.parse(localStorage.getItem("wallformCart") || "[]");
+
+      if (!cart.includes(code)) {
+        cart.push(code);
+      }
+
+      localStorage.setItem("wallformCart", JSON.stringify(cart));
+    }
+
+    // We'll replace this with your Canva website URL later.
+    window.location.href = "cart.html";
+  </script>
+</body>
+</html>
