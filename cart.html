@@ -52,6 +52,11 @@
       gap: 20px;
     }
 
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .item-name {
       font-size: 16px;
       font-weight: 600;
@@ -63,13 +68,46 @@
       margin-top: 5px;
     }
 
-    .quantity {
-      color: #aaa;
-      font-size: 13px;
-      margin-top: 5px;
+    .item-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid #444;
+      height: 38px;
+    }
+
+    .quantity-control button {
+      width: 38px;
+      height: 36px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: #000;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .quantity-control button:hover {
+      background: #181818;
+    }
+
+    .quantity-number {
+      width: 38px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .price {
+      min-width: 65px;
+      text-align: right;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -82,7 +120,7 @@
       padding: 25px 0;
     }
 
-    button {
+    .main-button {
       width: 100%;
       padding: 17px;
       border: 1px solid #fff;
@@ -95,14 +133,21 @@
       margin-top: 10px;
     }
 
-    button:hover {
+    .main-button:hover {
       background: #ddd;
     }
 
     .secondary {
+      width: 100%;
+      padding: 17px;
+      margin-top: 10px;
       background: #000;
       color: #fff;
       border: 1px solid #444;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
     }
 
     .secondary:hover {
@@ -126,6 +171,31 @@
       color: #888;
       line-height: 1.6;
     }
+
+    @media (max-width: 550px) {
+
+      .container {
+        padding: 35px 20px;
+      }
+
+      .item {
+        align-items: flex-start;
+      }
+
+      .item-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .item-name {
+        font-size: 15px;
+      }
+
+      .price {
+        min-width: auto;
+      }
+    }
   </style>
 </head>
 
@@ -134,7 +204,10 @@
 <div class="container">
 
   <div class="logo">WALLFORM</div>
-  <div class="tagline">DECOR YOUR WAY.</div>
+
+  <div class="tagline">
+    DECOR YOUR WAY.
+  </div>
 
   <h1>Your Cart</h1>
 
@@ -170,6 +243,10 @@ const products = {
 };
 
 
+/* -------------------------
+   CART STORAGE
+------------------------- */
+
 function getCart() {
 
   try {
@@ -181,23 +258,32 @@ function getCart() {
       return {};
     }
 
-    const parsed = JSON.parse(saved);
+    const parsed =
+      JSON.parse(saved);
 
-    // Support the old cart format too
+    /*
+      Convert the old array-style
+      cart into the new quantity format.
+    */
+
     if (Array.isArray(parsed)) {
 
       const converted = {};
 
       parsed.forEach(code => {
+
         converted[code] =
           (converted[code] || 0) + 1;
+
       });
 
       return converted;
     }
 
-    return parsed &&
+    return (
+      parsed &&
       typeof parsed === "object"
+    )
       ? parsed
       : {};
 
@@ -210,53 +296,103 @@ function getCart() {
 }
 
 
-function removeCart() {
+function saveCart(cart) {
 
   try {
-    localStorage.removeItem("wallformCart");
+
+    localStorage.setItem(
+      "wallformCart",
+      JSON.stringify(cart)
+    );
+
   } catch (error) {
+
     // Storage unavailable
+
   }
 
 }
 
 
-const cart = getCart();
+function removeCart() {
+
+  try {
+
+    localStorage.removeItem(
+      "wallformCart"
+    );
+
+  } catch (error) {
+
+    // Storage unavailable
+
+  }
+
+}
+
+
+/* -------------------------
+   CART
+------------------------- */
+
+let cart = getCart();
+
 
 const cartElement =
   document.getElementById("cart");
 
 
-const cartCodes =
-  Object.keys(cart).filter(
-    code =>
-      products[code] &&
-      Number(cart[code]) > 0
-  );
+/* -------------------------
+   RENDER CART
+------------------------- */
+
+function renderCart() {
+
+  const cartCodes =
+    Object.keys(cart).filter(code => {
+
+      return (
+        products[code] &&
+        Number(cart[code]) > 0
+      );
+
+    });
 
 
-if (cartCodes.length === 0) {
+  /*
+    Empty cart
+  */
 
-  cartElement.innerHTML = `
+  if (cartCodes.length === 0) {
 
-    <div class="empty">
-      Your cart is empty.
-    </div>
+    cartElement.innerHTML = `
 
-    <button
-      class="secondary"
-      onclick="goShopping()">
-      CONTINUE SHOPPING
-    </button>
+      <div class="empty">
+        Your cart is empty.
+      </div>
 
-  `;
+      <button
+        class="secondary"
+        onclick="goShopping()">
 
-} else {
+        CONTINUE SHOPPING
+
+      </button>
+
+    `;
+
+    return;
+  }
+
 
   let total = 0;
 
   let html = "";
 
+
+  /*
+    Products
+  */
 
   cartCodes.forEach(code => {
 
@@ -266,8 +402,10 @@ if (cartCodes.length === 0) {
     const quantity =
       Number(cart[code]);
 
+
     const itemTotal =
       product.price * quantity;
+
 
     total += itemTotal;
 
@@ -276,7 +414,7 @@ if (cartCodes.length === 0) {
 
       <div class="item">
 
-        <div>
+        <div class="item-info">
 
           <div class="item-name">
             ${product.name}
@@ -286,14 +424,46 @@ if (cartCodes.length === 0) {
             ${code}
           </div>
 
-          <div class="quantity">
-            Quantity: ${quantity}
-          </div>
-
         </div>
 
-        <div class="price">
-          ₹${itemTotal}
+
+        <div class="item-right">
+
+          <div class="quantity-control">
+
+            <button
+              onclick="changeQuantity('${code}', -1)"
+              aria-label="Decrease quantity">
+
+              −
+
+            </button>
+
+
+            <div class="quantity-number">
+
+              ${quantity}
+
+            </div>
+
+
+            <button
+              onclick="changeQuantity('${code}', 1)"
+              aria-label="Increase quantity">
+
+              +
+
+            </button>
+
+          </div>
+
+
+          <div class="price">
+
+            ₹${itemTotal}
+
+          </div>
+
         </div>
 
       </div>
@@ -302,6 +472,10 @@ if (cartCodes.length === 0) {
 
   });
 
+
+  /*
+    Bottom section
+  */
 
   html += `
 
@@ -318,8 +492,12 @@ if (cartCodes.length === 0) {
     </div>
 
 
-    <button onclick="placeOrder()">
+    <button
+      class="main-button"
+      onclick="placeOrder()">
+
       PLACE ORDER
+
     </button>
 
 
@@ -333,7 +511,7 @@ if (cartCodes.length === 0) {
 
 
     <button
-      class="clear"
+      class="secondary clear"
       onclick="clearCart()">
 
       CLEAR CART
@@ -348,7 +526,69 @@ if (cartCodes.length === 0) {
 }
 
 
+/* -------------------------
+   PLUS / MINUS
+------------------------- */
+
+function changeQuantity(code, amount) {
+
+  if (!products[code]) {
+    return;
+  }
+
+
+  const currentQuantity =
+    Number(cart[code] || 0);
+
+
+  const newQuantity =
+    currentQuantity + amount;
+
+
+  /*
+    If quantity reaches zero,
+    remove the product.
+  */
+
+  if (newQuantity <= 0) {
+
+    delete cart[code];
+
+  } else {
+
+    cart[code] = newQuantity;
+
+  }
+
+
+  saveCart(cart);
+
+  renderCart();
+
+}
+
+
+/* -------------------------
+   WHATSAPP CHECKOUT
+------------------------- */
+
 function placeOrder() {
+
+  const cartCodes =
+    Object.keys(cart).filter(code => {
+
+      return (
+        products[code] &&
+        Number(cart[code]) > 0
+      );
+
+    });
+
+
+  if (cartCodes.length === 0) {
+    return;
+  }
+
 
   let message =
     "Hi WALLFORM! I'd like to place an order:\n\n";
@@ -366,13 +606,30 @@ function placeOrder() {
       Number(cart[code]);
 
 
-    message +=
-      code +
-      " — " +
-      product.name +
-      " × " +
-      quantity +
-      "\n";
+    /*
+      Quantity appears only
+      when more than one is ordered.
+    */
+
+    if (quantity > 1) {
+
+      message +=
+        product.name +
+        " " +
+        code +
+        " (x" +
+        quantity +
+        ")\n";
+
+    } else {
+
+      message +=
+        product.name +
+        " " +
+        code +
+        "\n";
+
+    }
 
 
     total +=
@@ -389,6 +646,11 @@ function placeOrder() {
     "Please confirm the shipping cost and payment details.";
 
 
+  /*
+    Encode the COMPLETE message
+    safely for WhatsApp.
+  */
+
   const encodedMessage =
     encodeURIComponent(message);
 
@@ -400,22 +662,40 @@ function placeOrder() {
 }
 
 
+/* -------------------------
+   OTHER BUTTONS
+------------------------- */
+
 function clearCart() {
 
   removeCart();
 
-  location.reload();
+  cart = {};
+
+  renderCart();
 
 }
 
 
 function goShopping() {
 
+  /*
+    Replace the cart page with
+    your actual WALLFORM shop.
+  */
+
   window.location.replace(
     "https://wallform.my.canva.site/shop"
   );
 
 }
+
+
+/* -------------------------
+   INITIAL LOAD
+------------------------- */
+
+renderCart();
 
 </script>
 
