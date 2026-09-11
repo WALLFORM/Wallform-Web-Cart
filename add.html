@@ -3,28 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>WALLFORM</title>
 </head>
 
 <body>
 
-<p>Adding to cart...</p>
-
 <script>
 
-const params =
-  new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
+const code = params.get("add");
 
-const code =
-  params.get("add");
 
+/* =========================
+   VALID PRODUCTS
+========================= */
 
 const validProducts = [
   "WF-001",
   "WF-002",
   "WF-003",
-  "WF-004"
+  "WF-004",
+  "WF-005",
+  "WF-006",
+  "WF-007"
 ];
 
 
@@ -36,18 +37,13 @@ function getCart() {
 
   try {
 
-    const saved =
-      localStorage.getItem("wallformCart");
+    const saved = localStorage.getItem("wallformCart");
 
     if (!saved) {
       return {};
     }
 
-    const parsed =
-      JSON.parse(saved);
-
-
-    /* Convert old array format */
+    const parsed = JSON.parse(saved);
 
     if (Array.isArray(parsed)) {
 
@@ -63,13 +59,14 @@ function getCart() {
       return converted;
     }
 
-
-    return (
+    if (
       parsed &&
       typeof parsed === "object"
-    )
-      ? parsed
-      : {};
+    ) {
+      return parsed;
+    }
+
+    return {};
 
   } catch (error) {
 
@@ -86,18 +83,10 @@ function getCart() {
 
 function saveCart(cart) {
 
-  try {
-
-    localStorage.setItem(
-      "wallformCart",
-      JSON.stringify(cart)
-    );
-
-  } catch (error) {
-
-    // Storage unavailable
-
-  }
+  localStorage.setItem(
+    "wallformCart",
+    JSON.stringify(cart)
+  );
 
 }
 
@@ -108,13 +97,10 @@ function saveCart(cart) {
 
 if (validProducts.includes(code)) {
 
-  const cart =
-    getCart();
-
+  const cart = getCart();
 
   cart[code] =
     (Number(cart[code]) || 0) + 1;
-
 
   saveCart(cart);
 
@@ -122,50 +108,12 @@ if (validProducts.includes(code)) {
 
 
 /* =========================
-   RETURN TO ORIGINAL PAGE
+   OPEN CART
 ========================= */
 
-/*
-  document.referrer contains the Canva
-  page the customer came from.
-
-  This means:
-  Product page → Add to Cart
-  → return to THAT page
-
-  instead of always going to /shop.
-*/
-
-const previousPage =
-  document.referrer;
-
-
-/*
-  Only return to the referrer if it
-  actually came from your Canva site.
-*/
-
-if (
-  previousPage &&
-  previousPage.startsWith(
-    "https://wallform.my.canva.site/"
-  )
-) {
-
-  window.location.replace(
-    previousPage
-  );
-
-} else {
-
-  /*
-    Fallback if no valid referrer
-    is available.
-  */
-
-  window.history.back();
-
-}
+window.location.replace(
+  "https://wallform.github.io/Wallform-Web-Cart/cart.html"
+);
 
 </script>
 
