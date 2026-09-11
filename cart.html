@@ -1,246 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>WALLFORM — Cart</title>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+
     body {
+
       margin: 0;
+
       background: #000;
+
       color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     }
+
 
     .container {
+
       max-width: 700px;
+
       margin: 0 auto;
+
       padding: 50px 25px;
+
     }
+
 
     .logo {
+
       font-size: 28px;
+
       font-weight: 800;
+
       letter-spacing: 3px;
+
       margin-bottom: 5px;
+
     }
+
 
     .tagline {
+
       font-size: 11px;
+
       letter-spacing: 2px;
+
       color: #888;
+
       margin-bottom: 45px;
+
     }
+
 
     h1 {
+
       font-size: 32px;
-      margin-bottom: 30px;
+
+      margin: 0 0 30px 0;
+
     }
+
 
     .item {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
       gap: 20px;
+
       padding: 20px 0;
+
       border-bottom: 1px solid #333;
+
     }
+
 
     .item-info {
+
       flex: 1;
+
       min-width: 0;
+
     }
+
 
     .item-name {
+
       font-size: 16px;
+
       font-weight: 600;
+
     }
+
 
     .item-code {
+
       font-size: 12px;
+
       color: #888;
+
       margin-top: 5px;
+
     }
+
 
     .item-right {
+
       display: flex;
+
       align-items: center;
+
       gap: 20px;
+
     }
 
-    /* QUANTITY CONTROLS */
+
+    /* =========================
+       QUANTITY
+    ========================= */
 
     .quantity-control {
+
       display: flex;
+
       align-items: center;
+
       height: 42px;
+
       border: 1px solid #555;
+
     }
 
+
     .quantity-button {
+
       width: 42px;
+
       height: 40px;
+
       padding: 0;
+
       margin: 0;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       background: #000;
+
       color: #fff;
 
       border: none;
 
       font-size: 24px;
-      font-weight: 400;
 
       cursor: pointer;
 
       user-select: none;
+
     }
+
 
     .quantity-button:hover {
+
       background: #fff;
+
       color: #000;
+
     }
 
+
     .quantity-number {
+
       width: 42px;
+
       height: 40px;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       border-left: 1px solid #555;
+
       border-right: 1px solid #555;
 
       font-size: 15px;
+
       font-weight: 600;
+
     }
+
 
     .price {
+
       min-width: 65px;
+
       text-align: right;
+
       font-weight: 600;
+
       white-space: nowrap;
+
     }
 
+
+    /* =========================
+       TOTAL
+    ========================= */
+
     .total {
+
       display: flex;
+
       justify-content: space-between;
+
       padding: 25px 0;
 
       font-size: 19px;
+
       font-weight: 700;
+
     }
+
+
+    /* =========================
+       BUTTONS
+    ========================= */
 
     button.main-button,
     button.secondary {
+
       width: 100%;
+
       padding: 17px;
+
       margin-top: 10px;
 
       font-size: 14px;
+
       font-weight: 700;
+
       letter-spacing: 1px;
 
       cursor: pointer;
+
     }
+
 
     .main-button {
+
       background: #fff;
+
       color: #000;
+
       border: 1px solid #fff;
+
     }
+
 
     .main-button:hover {
+
       background: #ddd;
+
     }
+
 
     .secondary {
+
       background: #000;
+
       color: #fff;
+
       border: 1px solid #444;
+
     }
+
 
     .secondary:hover {
+
       background: #111;
+
       border-color: #777;
+
     }
+
 
     .clear {
+
       color: #666;
+
       border-color: #222;
+
       margin-top: 20px !important;
+
     }
+
 
     .clear:hover {
+
       color: #aaa;
+
     }
 
+
     .empty {
+
       color: #888;
+
       line-height: 1.6;
+
     }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 550px) {
 
       .container {
+
         padding: 35px 20px;
+
       }
+
 
       .item {
+
         align-items: flex-start;
+
       }
+
 
       .item-right {
+
         flex-direction: column;
+
         align-items: flex-end;
+
         gap: 10px;
+
       }
+
 
       .item-name {
+
         font-size: 15px;
+
       }
 
+
       .price {
+
         min-width: auto;
+
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-  <div class="logo">WALLFORM</div>
+
+  <div class="logo">
+    WALLFORM
+  </div>
+
 
   <div class="tagline">
     DECOR YOUR WAY.
   </div>
 
-  <h1>Your Cart</h1>
+
+  <h1>
+    Your Cart
+  </h1>
+
 
   <div id="cart"></div>
+
 
 </div>
 
 
 <script>
 
+
+/* =========================
+   PRODUCTS
+========================= */
+
 const products = {
 
   "WF-001": {
-    name: "911 GT3 RS Wall Decor",
+    name: "911 GT3 RS",
     price: 100
   },
 
@@ -257,6 +445,21 @@ const products = {
   "WF-004": {
     name: "McLaren Logo",
     price: 100
+  },
+
+  "WF-005": {
+    name: "Mercedes Logo",
+    price: 100
+  },
+
+  "WF-006": {
+    name: "Ferrari Logo",
+    price: 100
+  },
+
+  "WF-007": {
+    name: "MC Sword",
+    price: 199
   }
 
 };
@@ -280,7 +483,6 @@ function getCart() {
     const parsed =
       JSON.parse(saved);
 
-    /* Convert old array format */
 
     if (Array.isArray(parsed)) {
 
@@ -294,14 +496,21 @@ function getCart() {
       });
 
       return converted;
+
     }
 
-    return (
+
+    if (
       parsed &&
       typeof parsed === "object"
-    )
-      ? parsed
-      : {};
+    ) {
+
+      return parsed;
+
+    }
+
+
+    return {};
 
   } catch (error) {
 
@@ -318,39 +527,23 @@ function getCart() {
 
 function saveCart(cart) {
 
-  try {
-
-    localStorage.setItem(
-      "wallformCart",
-      JSON.stringify(cart)
-    );
-
-  } catch (error) {
-
-    console.log("Could not save cart.");
-
-  }
+  localStorage.setItem(
+    "wallformCart",
+    JSON.stringify(cart)
+  );
 
 }
 
 
 /* =========================
-   REMOVE CART
+   CLEAR CART
 ========================= */
 
 function removeCart() {
 
-  try {
-
-    localStorage.removeItem(
-      "wallformCart"
-    );
-
-  } catch (error) {
-
-    console.log("Could not clear cart.");
-
-  }
+  localStorage.removeItem(
+    "wallformCart"
+  );
 
 }
 
@@ -366,7 +559,7 @@ const cartElement =
 
 
 /* =========================
-   DISPLAY CART
+   RENDER
 ========================= */
 
 function renderCart() {
@@ -382,7 +575,9 @@ function renderCart() {
     });
 
 
-  /* EMPTY CART */
+  /* =========================
+     EMPTY
+  ========================= */
 
   if (cartCodes.length === 0) {
 
@@ -393,8 +588,9 @@ function renderCart() {
       </div>
 
       <button
+        type="button"
         class="secondary"
-        onclick="goShopping()">
+        onclick="closeCart()">
 
         CONTINUE SHOPPING
 
@@ -403,6 +599,7 @@ function renderCart() {
     `;
 
     return;
+
   }
 
 
@@ -411,7 +608,9 @@ function renderCart() {
   let html = "";
 
 
-  /* PRODUCTS */
+  /* =========================
+     ITEMS
+  ========================= */
 
   cartCodes.forEach(code => {
 
@@ -433,6 +632,7 @@ function renderCart() {
 
       <div class="item">
 
+
         <div class="item-info">
 
           <div class="item-name">
@@ -449,9 +649,8 @@ function renderCart() {
         <div class="item-right">
 
 
-          <!-- MINUS / NUMBER / PLUS -->
-
           <div class="quantity-control">
+
 
             <button
               type="button"
@@ -479,6 +678,7 @@ function renderCart() {
 
             </button>
 
+
           </div>
 
 
@@ -488,7 +688,9 @@ function renderCart() {
 
           </div>
 
+
         </div>
+
 
       </div>
 
@@ -497,7 +699,9 @@ function renderCart() {
   });
 
 
-  /* TOTAL + BUTTONS */
+  /* =========================
+     TOTAL + BUTTONS
+  ========================= */
 
   html += `
 
@@ -527,7 +731,7 @@ function renderCart() {
     <button
       type="button"
       class="secondary"
-      onclick="goShopping()">
+      onclick="closeCart()">
 
       CONTINUE SHOPPING
 
@@ -546,13 +750,14 @@ function renderCart() {
   `;
 
 
-  cartElement.innerHTML = html;
+  cartElement.innerHTML =
+    html;
 
 }
 
 
 /* =========================
-   CHANGE QUANTITY
+   QUANTITY
 ========================= */
 
 function changeQuantity(code, amount) {
@@ -570,11 +775,6 @@ function changeQuantity(code, amount) {
     current + amount;
 
 
-  /*
-    Remove product when
-    quantity reaches zero.
-  */
-
   if (newQuantity <= 0) {
 
     delete cart[code];
@@ -587,12 +787,7 @@ function changeQuantity(code, amount) {
   }
 
 
-  /* SAVE IMMEDIATELY */
-
   saveCart(cart);
-
-
-  /* REDRAW CART */
 
   renderCart();
 
@@ -600,7 +795,7 @@ function changeQuantity(code, amount) {
 
 
 /* =========================
-   WHATSAPP ORDER
+   WHATSAPP
 ========================= */
 
 function placeOrder() {
@@ -637,14 +832,6 @@ function placeOrder() {
       Number(cart[code]);
 
 
-    /*
-      ONE item:
-      F1 Stand WF-002
-
-      MULTIPLE:
-      F1 Stand WF-002 (x3)
-    */
-
     if (quantity > 1) {
 
       message +=
@@ -667,8 +854,7 @@ function placeOrder() {
 
 
     total +=
-      product.price *
-      quantity;
+      product.price * quantity;
 
   });
 
@@ -692,11 +878,19 @@ function placeOrder() {
 
 
 /* =========================
-   CONTINUE SHOPPING
+   CLOSE CART
 ========================= */
 
-function goShopping() {
-  window.history.back();
+function closeCart() {
+
+  /*
+    Do NOT redirect anywhere.
+
+    Just close this cart tab.
+  */
+
+  window.close();
+
 }
 
 
@@ -721,7 +915,10 @@ function clearCart() {
 
 renderCart();
 
+
 </script>
 
+
 </body>
+
 </html>
