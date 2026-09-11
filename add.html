@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>WALLFORM</title>
 </head>
 
@@ -10,74 +12,163 @@
 <p>Adding to cart...</p>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("add");
 
-  const validProducts = [
-    "WF-001",
-    "WF-002",
-    "WF-003",
-    "WF-004"
-  ];
+const params =
+  new URLSearchParams(window.location.search);
 
-  function getCart() {
-    try {
-      const saved = localStorage.getItem("wallformCart");
+const code =
+  params.get("add");
 
-      if (!saved) {
-        return {};
-      }
 
-      const parsed = JSON.parse(saved);
+const validProducts = [
+  "WF-001",
+  "WF-002",
+  "WF-003",
+  "WF-004"
+];
 
-      // Convert old array-style cart into quantity format
-      if (Array.isArray(parsed)) {
-        const converted = {};
 
-        parsed.forEach(item => {
-          converted[item] = (converted[item] || 0) + 1;
-        });
+/* =========================
+   GET CART
+========================= */
 
-        return converted;
-      }
+function getCart() {
 
-      return parsed && typeof parsed === "object"
-        ? parsed
-        : {};
+  try {
 
-    } catch (error) {
+    const saved =
+      localStorage.getItem("wallformCart");
+
+    if (!saved) {
       return {};
     }
-  }
+
+    const parsed =
+      JSON.parse(saved);
 
 
-  function saveCart(cart) {
-    try {
-      localStorage.setItem(
-        "wallformCart",
-        JSON.stringify(cart)
-      );
-    } catch (error) {
-      // Storage unavailable
+    /* Convert old array format */
+
+    if (Array.isArray(parsed)) {
+
+      const converted = {};
+
+      parsed.forEach(item => {
+
+        converted[item] =
+          (converted[item] || 0) + 1;
+
+      });
+
+      return converted;
     }
+
+
+    return (
+      parsed &&
+      typeof parsed === "object"
+    )
+      ? parsed
+      : {};
+
+  } catch (error) {
+
+    return {};
+
   }
 
+}
 
-  if (validProducts.includes(code)) {
 
-    const cart = getCart();
+/* =========================
+   SAVE CART
+========================= */
 
-    // Add one more of the product
-    cart[code] = (cart[code] || 0) + 1;
+function saveCart(cart) {
 
-    saveCart(cart);
+  try {
+
+    localStorage.setItem(
+      "wallformCart",
+      JSON.stringify(cart)
+    );
+
+  } catch (error) {
+
+    // Storage unavailable
+
   }
 
+}
 
-  // Go straight back to the WALLFORM shop
+
+/* =========================
+   ADD PRODUCT
+========================= */
+
+if (validProducts.includes(code)) {
+
+  const cart =
+    getCart();
+
+
+  cart[code] =
+    (Number(cart[code]) || 0) + 1;
+
+
+  saveCart(cart);
+
+}
+
+
+/* =========================
+   RETURN TO ORIGINAL PAGE
+========================= */
+
+/*
+  document.referrer contains the Canva
+  page the customer came from.
+
+  This means:
+  Product page → Add to Cart
+  → return to THAT page
+
+  instead of always going to /shop.
+*/
+
+const previousPage =
+  document.referrer;
+
+
+/*
+  Only return to the referrer if it
+  actually came from your Canva site.
+*/
+
+if (
+  previousPage &&
+  previousPage.startsWith(
+    "https://wallform.my.canva.site/"
+  )
+) {
+
+  window.location.replace(
+    previousPage
+  );
+
+} else {
+
+  /*
+    Fallback if no valid referrer
+    is available.
+  */
+
   window.location.replace(
     "https://wallform.my.canva.site/shop"
   );
+
+}
+
 </script>
 
 </body>
