@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,9 +48,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
       padding: 20px 0;
       border-bottom: 1px solid #333;
-      gap: 20px;
     }
 
     .item-info {
@@ -74,34 +75,55 @@
       gap: 20px;
     }
 
+    /* QUANTITY CONTROLS */
+
     .quantity-control {
       display: flex;
       align-items: center;
-      border: 1px solid #444;
-      height: 38px;
+      height: 42px;
+      border: 1px solid #555;
     }
 
-    .quantity-control button {
-      width: 38px;
-      height: 36px;
-      margin: 0;
+    .quantity-button {
+      width: 42px;
+      height: 40px;
       padding: 0;
-      border: none;
+      margin: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       background: #000;
       color: #fff;
-      font-size: 20px;
+
+      border: none;
+
+      font-size: 24px;
       font-weight: 400;
+
       cursor: pointer;
+
+      user-select: none;
     }
 
-    .quantity-control button:hover {
-      background: #181818;
+    .quantity-button:hover {
+      background: #fff;
+      color: #000;
     }
 
     .quantity-number {
-      width: 38px;
-      text-align: center;
-      font-size: 14px;
+      width: 42px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-left: 1px solid #555;
+      border-right: 1px solid #555;
+
+      font-size: 15px;
       font-weight: 600;
     }
 
@@ -115,22 +137,29 @@
     .total {
       display: flex;
       justify-content: space-between;
+      padding: 25px 0;
+
       font-size: 19px;
       font-weight: 700;
-      padding: 25px 0;
     }
 
-    .main-button {
+    button.main-button,
+    button.secondary {
       width: 100%;
       padding: 17px;
-      border: 1px solid #fff;
-      background: #fff;
-      color: #000;
+      margin-top: 10px;
+
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 1px;
+
       cursor: pointer;
-      margin-top: 10px;
+    }
+
+    .main-button {
+      background: #fff;
+      color: #000;
+      border: 1px solid #fff;
     }
 
     .main-button:hover {
@@ -138,16 +167,9 @@
     }
 
     .secondary {
-      width: 100%;
-      padding: 17px;
-      margin-top: 10px;
       background: #000;
       color: #fff;
       border: 1px solid #444;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      cursor: pointer;
     }
 
     .secondary:hover {
@@ -156,14 +178,12 @@
     }
 
     .clear {
-      margin-top: 20px;
-      background: #000;
       color: #666;
       border-color: #222;
+      margin-top: 20px !important;
     }
 
     .clear:hover {
-      background: #111;
       color: #aaa;
     }
 
@@ -243,9 +263,9 @@ const products = {
 };
 
 
-/* -------------------------
-   CART STORAGE
-------------------------- */
+/* =========================
+   GET CART
+========================= */
 
 function getCart() {
 
@@ -261,10 +281,7 @@ function getCart() {
     const parsed =
       JSON.parse(saved);
 
-    /*
-      Convert the old array-style
-      cart into the new quantity format.
-    */
+    /* Convert old array format */
 
     if (Array.isArray(parsed)) {
 
@@ -296,6 +313,10 @@ function getCart() {
 }
 
 
+/* =========================
+   SAVE CART
+========================= */
+
 function saveCart(cart) {
 
   try {
@@ -307,12 +328,16 @@ function saveCart(cart) {
 
   } catch (error) {
 
-    // Storage unavailable
+    console.log("Could not save cart.");
 
   }
 
 }
 
+
+/* =========================
+   REMOVE CART
+========================= */
 
 function removeCart() {
 
@@ -324,27 +349,26 @@ function removeCart() {
 
   } catch (error) {
 
-    // Storage unavailable
+    console.log("Could not clear cart.");
 
   }
 
 }
 
 
-/* -------------------------
+/* =========================
    CART
-------------------------- */
+========================= */
 
 let cart = getCart();
-
 
 const cartElement =
   document.getElementById("cart");
 
 
-/* -------------------------
-   RENDER CART
-------------------------- */
+/* =========================
+   DISPLAY CART
+========================= */
 
 function renderCart() {
 
@@ -359,9 +383,7 @@ function renderCart() {
     });
 
 
-  /*
-    Empty cart
-  */
+  /* EMPTY CART */
 
   if (cartCodes.length === 0) {
 
@@ -390,9 +412,7 @@ function renderCart() {
   let html = "";
 
 
-  /*
-    Products
-  */
+  /* PRODUCTS */
 
   cartCodes.forEach(code => {
 
@@ -429,11 +449,15 @@ function renderCart() {
 
         <div class="item-right">
 
+
+          <!-- MINUS / NUMBER / PLUS -->
+
           <div class="quantity-control">
 
             <button
-              onclick="changeQuantity('${code}', -1)"
-              aria-label="Decrease quantity">
+              type="button"
+              class="quantity-button"
+              onclick="changeQuantity('${code}', -1)">
 
               −
 
@@ -448,8 +472,9 @@ function renderCart() {
 
 
             <button
-              onclick="changeQuantity('${code}', 1)"
-              aria-label="Increase quantity">
+              type="button"
+              class="quantity-button"
+              onclick="changeQuantity('${code}', 1)">
 
               +
 
@@ -473,9 +498,7 @@ function renderCart() {
   });
 
 
-  /*
-    Bottom section
-  */
+  /* TOTAL + BUTTONS */
 
   html += `
 
@@ -493,6 +516,7 @@ function renderCart() {
 
 
     <button
+      type="button"
       class="main-button"
       onclick="placeOrder()">
 
@@ -502,6 +526,7 @@ function renderCart() {
 
 
     <button
+      type="button"
       class="secondary"
       onclick="goShopping()">
 
@@ -511,6 +536,7 @@ function renderCart() {
 
 
     <button
+      type="button"
       class="secondary clear"
       onclick="clearCart()">
 
@@ -526,9 +552,9 @@ function renderCart() {
 }
 
 
-/* -------------------------
-   PLUS / MINUS
-------------------------- */
+/* =========================
+   CHANGE QUANTITY
+========================= */
 
 function changeQuantity(code, amount) {
 
@@ -537,17 +563,17 @@ function changeQuantity(code, amount) {
   }
 
 
-  const currentQuantity =
+  const current =
     Number(cart[code] || 0);
 
 
   const newQuantity =
-    currentQuantity + amount;
+    current + amount;
 
 
   /*
-    If quantity reaches zero,
-    remove the product.
+    Remove product when
+    quantity reaches zero.
   */
 
   if (newQuantity <= 0) {
@@ -556,21 +582,27 @@ function changeQuantity(code, amount) {
 
   } else {
 
-    cart[code] = newQuantity;
+    cart[code] =
+      newQuantity;
 
   }
 
 
+  /* SAVE IMMEDIATELY */
+
   saveCart(cart);
+
+
+  /* REDRAW CART */
 
   renderCart();
 
 }
 
 
-/* -------------------------
-   WHATSAPP CHECKOUT
-------------------------- */
+/* =========================
+   WHATSAPP ORDER
+========================= */
 
 function placeOrder() {
 
@@ -607,8 +639,11 @@ function placeOrder() {
 
 
     /*
-      Quantity appears only
-      when more than one is ordered.
+      ONE item:
+      F1 Stand WF-002
+
+      MULTIPLE:
+      F1 Stand WF-002 (x3)
     */
 
     if (quantity > 1) {
@@ -646,11 +681,6 @@ function placeOrder() {
     "Please confirm the shipping cost and payment details.";
 
 
-  /*
-    Encode the COMPLETE message
-    safely for WhatsApp.
-  */
-
   const encodedMessage =
     encodeURIComponent(message);
 
@@ -662,9 +692,22 @@ function placeOrder() {
 }
 
 
-/* -------------------------
-   OTHER BUTTONS
-------------------------- */
+/* =========================
+   CONTINUE SHOPPING
+========================= */
+
+function goShopping() {
+
+  window.location.replace(
+    "https://wallform.my.canva.site/shop"
+  );
+
+}
+
+
+/* =========================
+   CLEAR CART
+========================= */
 
 function clearCart() {
 
@@ -677,23 +720,9 @@ function clearCart() {
 }
 
 
-function goShopping() {
-
-  /*
-    Replace the cart page with
-    your actual WALLFORM shop.
-  */
-
-  window.location.replace(
-    "https://wallform.my.canva.site/shop"
-  );
-
-}
-
-
-/* -------------------------
-   INITIAL LOAD
-------------------------- */
+/* =========================
+   START
+========================= */
 
 renderCart();
 
@@ -701,3 +730,4 @@ renderCart();
 
 </body>
 </html>
+```
