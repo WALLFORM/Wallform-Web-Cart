@@ -1,35 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>WALLFORM</title>
 </head>
+
 <body>
-  <p>Adding to cart...</p>
 
-  <script>
-    const products = {
-      "WF-001": "911 GT3 RS Wall Decor",
-      "WF-002": "F1 Stand",
-      "WF-003": "Japanese Escape",
-      "WF-004": "McLaren Logo"
-    };
+<p>Adding to cart...</p>
 
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("add");
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("add");
 
-    if (products[code]) {
-      let cart = JSON.parse(localStorage.getItem("wallformCart") || "[]");
+  const validProducts = [
+    "WF-001",
+    "WF-002",
+    "WF-003",
+    "WF-004"
+  ];
 
-      if (!cart.includes(code)) {
-        cart.push(code);
+  function getCart() {
+    try {
+      const saved = localStorage.getItem("wallformCart");
+
+      if (!saved) {
+        return {};
       }
 
-      localStorage.setItem("wallformCart", JSON.stringify(cart));
-    }
+      const parsed = JSON.parse(saved);
 
-    // We'll replace this with your Canva website URL later.
-    window.location.href = "cart.html";
-  </script>
+      // Convert old array-style cart into quantity format
+      if (Array.isArray(parsed)) {
+        const converted = {};
+
+        parsed.forEach(item => {
+          converted[item] = (converted[item] || 0) + 1;
+        });
+
+        return converted;
+      }
+
+      return parsed && typeof parsed === "object"
+        ? parsed
+        : {};
+
+    } catch (error) {
+      return {};
+    }
+  }
+
+
+  function saveCart(cart) {
+    try {
+      localStorage.setItem(
+        "wallformCart",
+        JSON.stringify(cart)
+      );
+    } catch (error) {
+      // Storage unavailable
+    }
+  }
+
+
+  if (validProducts.includes(code)) {
+
+    const cart = getCart();
+
+    // Add one more of the product
+    cart[code] = (cart[code] || 0) + 1;
+
+    saveCart(cart);
+  }
+
+
+  // Go straight back to the WALLFORM shop
+  window.location.replace(
+    "https://wallform.my.canva.site/shop"
+  );
+</script>
+
 </body>
 </html>
