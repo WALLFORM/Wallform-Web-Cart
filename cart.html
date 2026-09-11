@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>WALLFORM — Cart</title>
 
   <style>
@@ -48,6 +49,7 @@
       align-items: center;
       padding: 20px 0;
       border-bottom: 1px solid #333;
+      gap: 20px;
     }
 
     .item-name {
@@ -61,8 +63,15 @@
       margin-top: 5px;
     }
 
+    .quantity {
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
     .price {
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .total {
@@ -122,209 +131,293 @@
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="logo">WALLFORM</div>
-    <div class="tagline">DECOR YOUR WAY.</div>
+  <div class="logo">WALLFORM</div>
+  <div class="tagline">DECOR YOUR WAY.</div>
 
-    <h1>Your Cart</h1>
+  <h1>Your Cart</h1>
 
-    <div id="cart"></div>
+  <div id="cart"></div>
 
-  </div>
-
-  <script>
-
-    const products = {
-      "WF-001": {
-        name: "911 GT3 RS Wall Decor",
-        price: 100
-      },
-
-      "WF-002": {
-        name: "F1 Stand",
-        price: 100
-      },
-
-      "WF-003": {
-        name: "Japanese Escape",
-        price: 100
-      },
-
-      "WF-004": {
-        name: "McLaren Logo",
-        price: 100
-      }
-    };
+</div>
 
 
-    // Safely read the cart
-    function getCart() {
-      try {
-        const saved = localStorage.getItem("wallformCart");
+<script>
 
-        if (!saved) {
-          return [];
-        }
+const products = {
 
-        const parsed = JSON.parse(saved);
+  "WF-001": {
+    name: "911 GT3 RS Wall Decor",
+    price: 100
+  },
 
-        return Array.isArray(parsed) ? parsed : [];
+  "WF-002": {
+    name: "F1 Stand",
+    price: 100
+  },
 
-      } catch (error) {
-        return [];
-      }
+  "WF-003": {
+    name: "Japanese Escape",
+    price: 100
+  },
+
+  "WF-004": {
+    name: "McLaren Logo",
+    price: 100
+  }
+
+};
+
+
+function getCart() {
+
+  try {
+
+    const saved =
+      localStorage.getItem("wallformCart");
+
+    if (!saved) {
+      return {};
     }
 
+    const parsed = JSON.parse(saved);
 
-    // Safely remove the cart
-    function removeCart() {
-      try {
-        localStorage.removeItem("wallformCart");
-      } catch (error) {
-        // Storage unavailable — nothing else to do
-      }
+    // Support the old cart format too
+    if (Array.isArray(parsed)) {
+
+      const converted = {};
+
+      parsed.forEach(code => {
+        converted[code] =
+          (converted[code] || 0) + 1;
+      });
+
+      return converted;
     }
 
+    return parsed &&
+      typeof parsed === "object"
+      ? parsed
+      : {};
 
-    let cart = getCart();
+  } catch (error) {
 
-    const cartElement = document.getElementById("cart");
+    return {};
 
+  }
 
-    if (cart.length === 0) {
-
-      cartElement.innerHTML = `
-        <div class="empty">
-          Your cart is empty.
-        </div>
-
-        <button class="secondary" onclick="goShopping()">
-          CONTINUE SHOPPING
-        </button>
-      `;
-
-    } else {
-
-      let total = 0;
-      let html = "";
+}
 
 
-      cart.forEach(code => {
+function removeCart() {
 
-        const product = products[code];
+  try {
+    localStorage.removeItem("wallformCart");
+  } catch (error) {
+    // Storage unavailable
+  }
 
-        if (!product) return;
+}
 
-        total += product.price;
 
-        html += `
-          <div class="item">
+const cart = getCart();
 
-            <div>
-              <div class="item-name">
-                ${product.name}
-              </div>
+const cartElement =
+  document.getElementById("cart");
 
-              <div class="item-code">
-                ${code}
-              </div>
-            </div>
 
-            <div class="price">
-              ₹${product.price}
-            </div>
+const cartCodes =
+  Object.keys(cart).filter(
+    code =>
+      products[code] &&
+      Number(cart[code]) > 0
+  );
 
+
+if (cartCodes.length === 0) {
+
+  cartElement.innerHTML = `
+
+    <div class="empty">
+      Your cart is empty.
+    </div>
+
+    <button
+      class="secondary"
+      onclick="goShopping()">
+      CONTINUE SHOPPING
+    </button>
+
+  `;
+
+} else {
+
+  let total = 0;
+
+  let html = "";
+
+
+  cartCodes.forEach(code => {
+
+    const product =
+      products[code];
+
+    const quantity =
+      Number(cart[code]);
+
+    const itemTotal =
+      product.price * quantity;
+
+    total += itemTotal;
+
+
+    html += `
+
+      <div class="item">
+
+        <div>
+
+          <div class="item-name">
+            ${product.name}
           </div>
-        `;
-      });
 
+          <div class="item-code">
+            ${code}
+          </div>
 
-      html += `
-        <div class="total">
-          <span>Product Total</span>
-          <span>₹${total}</span>
+          <div class="quantity">
+            Quantity: ${quantity}
+          </div>
+
         </div>
 
-        <button onclick="placeOrder()">
-          PLACE ORDER
-        </button>
+        <div class="price">
+          ₹${itemTotal}
+        </div>
 
-        <button class="secondary" onclick="goShopping()">
-          CONTINUE SHOPPING
-        </button>
+      </div>
 
-        <button class="clear" onclick="clearCart()">
-          CLEAR CART
-        </button>
-      `;
+    `;
+
+  });
 
 
-      cartElement.innerHTML = html;
-    }
+  html += `
+
+    <div class="total">
+
+      <span>
+        Product Total
+      </span>
+
+      <span>
+        ₹${total}
+      </span>
+
+    </div>
 
 
-    function placeOrder() {
-
-      // Build normal text first
-      let message =
-        "Hi WALLFORM! I'd like to place an order:\n\n";
+    <button onclick="placeOrder()">
+      PLACE ORDER
+    </button>
 
 
-      cart.forEach(code => {
+    <button
+      class="secondary"
+      onclick="goShopping()">
 
-        const product = products[code];
+      CONTINUE SHOPPING
 
-        if (product) {
-          message +=
-            code +
-            " — " +
-            product.name +
-            "\n";
-        }
-      });
+    </button>
 
 
-      const total = cart.reduce(
-        (sum, code) =>
-          sum + (products[code]?.price || 0),
-        0
-      );
+    <button
+      class="clear"
+      onclick="clearCart()">
+
+      CLEAR CART
+
+    </button>
+
+  `;
 
 
-      message +=
-        "\nProduct total: ₹" +
-        total +
-        "\n\n" +
-        "Please confirm the shipping cost and payment details.";
+  cartElement.innerHTML = html;
+
+}
 
 
-      // Encode the ENTIRE message safely
-      const encodedMessage =
-        encodeURIComponent(message);
+function placeOrder() {
+
+  let message =
+    "Hi WALLFORM! I'd like to place an order:\n\n";
 
 
-      window.location.href =
-        "https://wa.me/918500670741?text=" +
-        encodedMessage;
-    }
+  let total = 0;
 
 
-    function clearCart() {
+  cartCodes.forEach(code => {
 
-      removeCart();
+    const product =
+      products[code];
 
-      location.reload();
-    }
+    const quantity =
+      Number(cart[code]);
 
 
-    function goShopping() {
+    message +=
+      code +
+      " — " +
+      product.name +
+      " × " +
+      quantity +
+      "\n";
 
-      // We'll replace this with your Canva website URL later.
-      window.location.href = "https://www.canva.com/";
-    }
 
-  </script>
+    total +=
+      product.price *
+      quantity;
+
+  });
+
+
+  message +=
+    "\nProduct total: ₹" +
+    total +
+    "\n\n" +
+    "Please confirm the shipping cost and payment details.";
+
+
+  const encodedMessage =
+    encodeURIComponent(message);
+
+
+  window.location.href =
+    "https://wa.me/918500670741?text=" +
+    encodedMessage;
+
+}
+
+
+function clearCart() {
+
+  removeCart();
+
+  location.reload();
+
+}
+
+
+function goShopping() {
+
+  window.location.replace(
+    "https://wallform.my.canva.site/shop"
+  );
+
+}
+
+</script>
 
 </body>
 </html>
