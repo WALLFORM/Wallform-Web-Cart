@@ -13,25 +13,14 @@
 const params = new URLSearchParams(window.location.search);
 const code = params.get("add");
 
-
-/* =========================
-   VALID PRODUCTS
-========================= */
-
 const validProducts = [
   "WF-001",
   "WF-002",
   "WF-003",
   "WF-004",
   "WF-005",
-  "WF-006",
-  "WF-007"
+  "WF-006"
 ];
-
-
-/* =========================
-   GET CART
-========================= */
 
 function getCart() {
 
@@ -39,9 +28,7 @@ function getCart() {
 
     const saved = localStorage.getItem("wallformCart");
 
-    if (!saved) {
-      return {};
-    }
+    if (!saved) return {};
 
     const parsed = JSON.parse(saved);
 
@@ -50,10 +37,8 @@ function getCart() {
       const converted = {};
 
       parsed.forEach(item => {
-
         converted[item] =
           (converted[item] || 0) + 1;
-
       });
 
       return converted;
@@ -73,27 +58,14 @@ function getCart() {
     return {};
 
   }
-
 }
 
-
-/* =========================
-   SAVE CART
-========================= */
-
 function saveCart(cart) {
-
   localStorage.setItem(
     "wallformCart",
     JSON.stringify(cart)
   );
-
 }
-
-
-/* =========================
-   ADD PRODUCT
-========================= */
 
 if (validProducts.includes(code)) {
 
@@ -103,13 +75,7 @@ if (validProducts.includes(code)) {
     (Number(cart[code]) || 0) + 1;
 
   saveCart(cart);
-
 }
-
-
-/* =========================
-   OPEN CART
-========================= */
 
 window.location.replace(
   "https://wallform.github.io/Wallform-Web-Cart/cart.html"
