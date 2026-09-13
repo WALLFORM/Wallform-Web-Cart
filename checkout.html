@@ -12,210 +12,111 @@
 
   <title>Checkout — WALLFORM</title>
 
-
   <style>
 
     * {
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
-
       background: #000;
-
       color: #fff;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+      font-family: Arial, Helvetica, sans-serif;
       padding: 30px 20px;
-
     }
-
 
     .checkout {
-
       max-width: 600px;
-
       margin: auto;
-
     }
-
 
     h1 {
-
       font-size: 32px;
-
       margin-bottom: 30px;
-
     }
-
 
     .section {
-
       border: 1px solid #333;
-
       padding: 20px;
-
       margin-bottom: 20px;
-
     }
-
 
     .section h2 {
-
       font-size: 18px;
-
       margin-top: 0;
-
     }
 
-
-    input,
-    select {
-
+    input {
       width: 100%;
-
       padding: 14px;
-
       margin-bottom: 12px;
-
       background: #111;
-
       color: #fff;
-
       border: 1px solid #444;
-
       font-size: 16px;
-
       outline: none;
-
     }
 
-
-    input:focus,
-    select:focus {
-
+    input:focus {
       border-color: #fff;
-
     }
-
 
     button {
-
       width: 100%;
-
       padding: 15px;
-
       margin-top: 12px;
-
       border: none;
-
       background: #fff;
-
       color: #000;
-
       font-size: 15px;
-
       font-weight: bold;
-
       cursor: pointer;
-
     }
-
 
     button:disabled {
-
       opacity: 0.5;
-
       cursor: not-allowed;
-
     }
-
 
     .row {
-
       display: flex;
-
       justify-content: space-between;
-
       margin: 12px 0;
-
       color: #ccc;
-
     }
-
 
     .total {
-
       border-top: 1px solid #333;
-
       padding-top: 15px;
-
       margin-top: 15px;
-
       font-size: 20px;
-
       font-weight: bold;
-
       color: #fff;
-
     }
-
 
     .error {
-
       color: #ff6b6b;
-
       margin-top: 12px;
-
       display: none;
-
     }
-
 
     .success {
-
       color: #7cff9b;
-
       margin-top: 12px;
-
       display: none;
-
     }
-
 
     #shippingBox {
-
       display: none;
-
     }
-
-
-    #addressBox {
-
-      display: none;
-
-    }
-
 
     .field-label {
-
       display: block;
-
       font-size: 12px;
-
       color: #888;
-
       margin-bottom: 6px;
-
       letter-spacing: 0.5px;
-
     }
 
   </style>
@@ -233,62 +134,12 @@
 
 
   <!-- =========================
-       SHIPPING
+       DELIVERY FORM
   ========================== -->
 
   <div class="section">
 
-
-    <h2>
-      Delivery PIN Code
-    </h2>
-
-
-    <span class="field-label">
-      Enter the PIN where the order will be delivered
-    </span>
-
-
-    <input
-      id="pin"
-      type="text"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="6-digit PIN code"
-    >
-
-
-    <button
-      id="calculateBtn"
-      onclick="calculateShipping()">
-
-      CALCULATE SHIPPING
-
-    </button>
-
-
-    <div
-      id="error"
-      class="error">
-    </div>
-
-
-  </div>
-
-
-
-  <!-- =========================
-       ADDRESS
-  ========================== -->
-
-  <div
-    id="addressBox"
-    class="section">
-
-
-    <h2>
-      Delivery Details
-    </h2>
+    <h2>Delivery Details</h2>
 
 
     <label class="field-label">
@@ -310,7 +161,8 @@
     <input
       id="phone"
       type="tel"
-      inputmode="tel"
+      inputmode="numeric"
+      maxlength="10"
       autocomplete="tel"
       placeholder="10-digit phone number"
     >
@@ -324,7 +176,7 @@
       id="house"
       type="text"
       autocomplete="street-address"
-      placeholder="House / Flat / Building number"
+      placeholder="House / Flat / Building"
     >
 
 
@@ -374,13 +226,32 @@
     >
 
 
+    <label class="field-label">
+      PIN CODE
+    </label>
+
+    <input
+      id="pin"
+      type="text"
+      inputmode="numeric"
+      maxlength="6"
+      autocomplete="postal-code"
+      placeholder="6-digit PIN code"
+    >
+
+
     <button
-      onclick="showOrderSummary()">
-
-      CONTINUE
-
+      id="calculateBtn"
+      onclick="calculateShipping()"
+    >
+      CALCULATE SHIPPING
     </button>
 
+
+    <div
+      id="error"
+      class="error"
+    ></div>
 
   </div>
 
@@ -392,12 +263,10 @@
 
   <div
     id="shippingBox"
-    class="section">
+    class="section"
+  >
 
-
-    <h2>
-      Order Summary
-    </h2>
+    <h2>Order Summary</h2>
 
 
     <div class="row">
@@ -440,21 +309,18 @@
 
 
     <button
-      onclick="placeOrder()">
-
+      onclick="placeOrder()"
+    >
       PLACE ORDER
-
     </button>
 
 
     <div
       id="success"
-      class="success">
-
+      class="success"
+    >
       Opening WhatsApp...
-
     </div>
-
 
   </div>
 
@@ -519,8 +385,6 @@ let shippingPrice = 0;
 
 let currentCart = {};
 
-let deliveryDetails = {};
-
 
 
 /* =========================
@@ -583,7 +447,6 @@ function calculateProductsTotal() {
     const code in currentCart
   ) {
 
-
     if (!products[code]) {
       continue;
     }
@@ -607,198 +470,10 @@ function calculateProductsTotal() {
 
 
 /* =========================
-   SHIPPING
+   CALCULATE SHIPPING
 ========================= */
 
 async function calculateShipping() {
-
-
-  const pin =
-    document
-      .getElementById("pin")
-      .value
-      .trim();
-
-
-  const error =
-    document.getElementById("error");
-
-
-  const button =
-    document.getElementById(
-      "calculateBtn"
-    );
-
-
-  error.style.display =
-    "none";
-
-
-  if (!/^\d{6}$/.test(pin)) {
-
-    error.textContent =
-      "Please enter a valid 6-digit PIN code.";
-
-    error.style.display =
-      "block";
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  button.textContent =
-    "CALCULATING...";
-
-
-  try {
-
-
-    const response =
-      await fetch(
-        WORKER_URL,
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json"
-
-          },
-
-          body:
-            JSON.stringify({
-
-              destination: pin
-
-            })
-
-        }
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        result.error ||
-        "Unable to calculate shipping."
-      );
-
-    }
-
-
-    if (
-      !result.data ||
-      result.data.total == null
-    ) {
-
-      throw new Error(
-        "Postpin did not return a shipping price."
-      );
-
-    }
-
-
-    shippingPrice =
-      Number(
-        result.data.total
-      );
-
-
-    const productsTotal =
-      calculateProductsTotal();
-
-
-    const grandTotal =
-      productsTotal +
-      shippingPrice;
-
-
-
-    document
-      .getElementById(
-        "productsTotal"
-      )
-      .textContent =
-      "₹" +
-      productsTotal.toFixed(2);
-
-
-    document
-      .getElementById(
-        "shippingTotal"
-      )
-      .textContent =
-      "₹" +
-      shippingPrice.toFixed(2);
-
-
-    document
-      .getElementById(
-        "grandTotal"
-      )
-      .textContent =
-      "₹" +
-      grandTotal.toFixed(2);
-
-
-    /*
-      Only reveal the address form
-      after shipping has been calculated.
-    */
-
-    document
-      .getElementById(
-        "addressBox"
-      )
-      .style.display =
-      "block";
-
-
-  } catch (error) {
-
-
-    document
-      .getElementById("error")
-      .textContent =
-      error.message;
-
-
-    document
-      .getElementById("error")
-      .style.display =
-      "block";
-
-
-  }
-
-
-  button.disabled =
-    false;
-
-
-  button.textContent =
-    "CALCULATE SHIPPING";
-
-}
-
-
-
-/* =========================
-   ADDRESS VALIDATION
-========================= */
-
-function showOrderSummary() {
 
 
   const fullName =
@@ -861,12 +536,18 @@ function showOrderSummary() {
     document.getElementById("error");
 
 
+  const button =
+    document.getElementById(
+      "calculateBtn"
+    );
+
+
   error.style.display =
     "none";
 
 
   /* =========================
-     REQUIRED FIELDS
+     VALIDATE FORM
   ========================== */
 
   if (!fullName) {
@@ -894,7 +575,7 @@ function showOrderSummary() {
   if (!house) {
 
     showError(
-      "Please enter your house, flat or building number."
+      "Please enter your house, flat or building."
     );
 
     return;
@@ -958,54 +639,160 @@ function showOrderSummary() {
 
 
   /* =========================
-     SAVE DETAILS
+     DISABLE BUTTON
   ========================== */
 
-  deliveryDetails = {
+  button.disabled =
+    true;
 
-    fullName: fullName,
-
-    phone: phone,
-
-    house: house,
-
-    street: street,
-
-    area: area,
-
-    city: city,
-
-    state: state,
-
-    pin: pin
-
-  };
+  button.textContent =
+    "CALCULATING...";
 
 
-  /*
-    Keep the existing summary visible.
-    Nothing else changes here.
-  */
-
-  document
-    .getElementById(
-      "shippingBox"
-    )
-    .style.display =
-    "block";
+  try {
 
 
-  document
-    .getElementById(
-      "shippingBox"
-    )
-    .scrollIntoView({
+    /* =========================
+       SEND PIN TO WORKER
+    ========================== */
 
-      behavior: "smooth",
+    const response =
+      await fetch(
+        WORKER_URL,
+        {
 
-      block: "start"
+          method: "POST",
 
-    });
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              destination: pin
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result.error ||
+        "Unable to calculate shipping."
+      );
+
+    }
+
+
+    if (
+      !result.data ||
+      result.data.total == null
+    ) {
+
+      throw new Error(
+        "Postpin did not return a shipping price."
+      );
+
+    }
+
+
+    /* =========================
+       SAVE SHIPPING
+    ========================== */
+
+    shippingPrice =
+      Number(
+        result.data.total
+      );
+
+
+    /* =========================
+       CALCULATE TOTALS
+    ========================== */
+
+    const productsTotal =
+      calculateProductsTotal();
+
+
+    const grandTotal =
+      productsTotal +
+      shippingPrice;
+
+
+    document
+      .getElementById(
+        "productsTotal"
+      )
+      .textContent =
+      "₹" +
+      productsTotal.toFixed(2);
+
+
+    document
+      .getElementById(
+        "shippingTotal"
+      )
+      .textContent =
+      "₹" +
+      shippingPrice.toFixed(2);
+
+
+    document
+      .getElementById(
+        "grandTotal"
+      )
+      .textContent =
+      "₹" +
+      grandTotal.toFixed(2);
+
+
+    /* =========================
+       SHOW SUMMARY
+    ========================== */
+
+    document
+      .getElementById(
+        "shippingBox"
+      )
+      .style.display =
+      "block";
+
+
+    document
+      .getElementById(
+        "shippingBox"
+      )
+      .scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+      });
+
+
+  } catch (error) {
+
+
+    showError(
+      error.message
+    );
+
+  }
+
+
+  button.disabled =
+    false;
+
+  button.textContent =
+    "CALCULATE SHIPPING";
 
 }
 
@@ -1031,14 +818,6 @@ function showError(message) {
     "block";
 
 
-  error.scrollIntoView({
-
-    behavior: "smooth",
-
-    block: "center"
-
-  });
-
 }
 
 
@@ -1051,16 +830,16 @@ function placeOrder() {
 
 
   /*
-    Make sure the customer has
-    filled the address first.
+    Make absolutely sure
+    shipping was calculated.
   */
 
   if (
-    !deliveryDetails.fullName
+    shippingPrice <= 0
   ) {
 
     showError(
-      "Please complete your delivery details first."
+      "Please calculate shipping first."
     );
 
     return;
@@ -1068,6 +847,105 @@ function placeOrder() {
   }
 
 
+  /* =========================
+     GET FORM DETAILS
+  ========================== */
+
+  const fullName =
+    document
+      .getElementById("fullName")
+      .value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById("phone")
+      .value
+      .trim();
+
+
+  const house =
+    document
+      .getElementById("house")
+      .value
+      .trim();
+
+
+  const street =
+    document
+      .getElementById("street")
+      .value
+      .trim();
+
+
+  const area =
+    document
+      .getElementById("area")
+      .value
+      .trim();
+
+
+  const city =
+    document
+      .getElementById("city")
+      .value
+      .trim();
+
+
+  const state =
+    document
+      .getElementById("state")
+      .value
+      .trim();
+
+
+  const pin =
+    document
+      .getElementById("pin")
+      .value
+      .trim();
+
+
+
+  /* =========================
+     FINAL VALIDATION
+  ========================== */
+
+  if (!fullName ||
+      !phone ||
+      !house ||
+      !street ||
+      !area ||
+      !city ||
+      !state ||
+      !/^\d{6}$/.test(pin)
+  ) {
+
+    showError(
+      "Please complete all delivery details."
+    );
+
+    return;
+
+  }
+
+
+  if (!/^\d{10}$/.test(phone)) {
+
+    showError(
+      "Please enter a valid 10-digit phone number."
+    );
+
+    return;
+
+  }
+
+
+
+  /* =========================
+     TOTALS
+  ========================== */
 
   const productsTotal =
     calculateProductsTotal();
@@ -1079,21 +957,16 @@ function placeOrder() {
 
 
 
-  /*
-    Start WhatsApp message.
-  */
-
-  let message =
-    "Hi WALLFORM! I'd like to place an order.%0A%0A";
-
-
-
   /* =========================
-     ORDER
+     WHATSAPP MESSAGE
   ========================== */
 
+  let message =
+    "Hi WALLFORM! I'd like to place an order:%0A%0A";
+
+
   message +=
-    "*ORDER*%0A";
+    "ORDER%0A";
 
 
   for (
@@ -1118,7 +991,9 @@ function placeOrder() {
 
 
     message +=
-      products[code].name +
+      encodeURIComponent(
+        products[code].name
+      ) +
       " (" +
       code +
       ") × " +
@@ -1130,7 +1005,7 @@ function placeOrder() {
 
 
   /* =========================
-     PRICE
+     PRICE DETAILS
   ========================== */
 
   message +=
@@ -1144,72 +1019,79 @@ function placeOrder() {
 
 
   message +=
-    "%0A*Total: ₹" +
+    "%0ATotal: ₹" +
     grandTotal.toFixed(2);
 
 
 
   /* =========================
-     DELIVERY DETAILS
+     FULL DELIVERY ADDRESS
   ========================== */
 
   message +=
-    "%0A%0A*DELIVERY DETAILS*";
+    "%0A%0ADELIVERY DETAILS%0A";
 
 
   message +=
-    "%0AName: " +
+    "Name: " +
     encodeURIComponent(
-      deliveryDetails.fullName
-    );
+      fullName
+    ) +
+    "%0A";
 
 
   message +=
-    "%0APhone: " +
+    "Phone: " +
     encodeURIComponent(
-      deliveryDetails.phone
-    );
+      phone
+    ) +
+    "%0A";
 
 
   message +=
-    "%0AHouse/Flat/Building: " +
+    "House/Flat/Building: " +
     encodeURIComponent(
-      deliveryDetails.house
-    );
+      house
+    ) +
+    "%0A";
 
 
   message +=
-    "%0AStreet/Road: " +
+    "Street/Road: " +
     encodeURIComponent(
-      deliveryDetails.street
-    );
+      street
+    ) +
+    "%0A";
 
 
   message +=
-    "%0AArea/Locality: " +
+    "Area/Locality: " +
     encodeURIComponent(
-      deliveryDetails.area
-    );
+      area
+    ) +
+    "%0A";
 
 
   message +=
-    "%0ACity: " +
+    "City: " +
     encodeURIComponent(
-      deliveryDetails.city
-    );
+      city
+    ) +
+    "%0A";
 
 
   message +=
-    "%0AState: " +
+    "State: " +
     encodeURIComponent(
-      deliveryDetails.state
-    );
+      state
+    ) +
+    "%0A";
 
 
   message +=
-    "%0APIN: " +
+    "PIN: " +
     encodeURIComponent(
-      deliveryDetails.pin
+      pin
     );
 
 
@@ -1219,9 +1101,9 @@ function placeOrder() {
 
 
 
-  /*
-    Show confirmation text.
-  */
+  /* =========================
+     OPEN WHATSAPP
+  ========================== */
 
   document
     .getElementById(
@@ -1230,11 +1112,6 @@ function placeOrder() {
     .style.display =
     "block";
 
-
-
-  /*
-    Open WhatsApp.
-  */
 
   window.location.href =
     "https://wa.me/918500670741?text=" +
