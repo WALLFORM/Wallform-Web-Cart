@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — WALLFORM</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 30px 20px;
+    }
+
+    .checkout {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      border: 1px solid #333;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      background: #fff;
+      color: #000;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      color: #ccc;
+    }
+
+    .total {
+      border-top: 1px solid #333;
+      padding-top: 15px;
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .error {
+      color: #ff6b6b;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .success {
+      color: #7cff9b;
+      margin-top: 12px;
+      display: none;
+    }
+
+    #shippingBox {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="checkout">
+
+  <h1>CHECKOUT</h1>
+
+  <div class="section">
+    <h2>Delivery PIN Code</h2>
+
+    <input
+      id="pin"
+      type="text"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="Enter 6-digit PIN code"
+    >
+
+    <button id="calculateBtn" onclick="calculateShipping()">
+      CALCULATE SHIPPING
+    </button>
+
+    <div id="error" class="error"></div>
+  </div>
+
+  <div id="shippingBox" class="section">
+
+    <h2>Order Summary</h2>
+
+    <div class="row">
+      <span>Products</span>
+      <span id="productsTotal">₹0</span>
+    </div>
+
+    <div class="row">
+      <span>Shipping</span>
+      <span id="shippingTotal">₹0</span>
+    </div>
+
+    <div class="row total">
+      <span>Total</span>
+      <span id="grandTotal">₹0</span>
+    </div>
+
+    <button onclick="placeOrder()">
+      PLACE ORDER
+    </button>
+
+    <div id="success" class="success">
+      Opening WhatsApp...
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const WORKER_URL =
+  "https://wallformworker.edararampranav.workers.dev/";
+
+const products = {
+  "WF-001": { name: "911 GT3 RS", price: 69 },
+  "WF-002": { name: "F1 Stand", price: 99 },
+  "WF-003": { name: "Japanese Escape", price: 89 },
+  "WF-004": { name: "McLaren Logo", price: 89 },
+  "WF-005": { name: "Mercedes Logo", price: 89 },
+  "WF-006": { name: "Ferrari Logo", price: 79 }
+};
+
+let shippingPrice = 0;
+let currentCart = {};
+
+function getCart() {
+  try {
+    const saved = localStorage.getItem("wallformCart");
+
+    if (!saved) return {};
+
+    const parsed = JSON.parse(saved);
+
+    if (parsed && typeof parsed === "object") {
+      return parsed;
+    }
+
+    return {};
+
+  } catch (error) {
+    return {};
+  }
+}
+
+function calculateProductsTotal() {
+
+  currentCart = getCart();
+
+  let total = 0;
+
+  for (const code in currentCart) {
+
+    if (!products[code]) continue;
+
+    const quantity = Number(currentCart[code]) || 0;
+
+    total += products[code].price * quantity;
+  }
+
+  return total;
+}
+
+async function calculateShipping() {
+
+  const pin = document.getElementById("pin").value.trim();
+  const error = document.getElementById("error");
+  const button = document.getElementById("calculateBtn");
+
+  error.style.display = "none";
+
+  if (!/^\d{6}$/.test(pin)) {
+
+    error.textContent =
+      "Please enter a valid 6-digit PIN code.";
+
+    error.style.display = "block";
+
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "CALCULATING...";
+
+  try {
+
+    const response = await fetch(WORKER_URL, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        destination: pin
+      })
+
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Unable to calculate shipping."
+      );
+    }
+
+    if (
+      !result.data ||
+      result.data.total == null
+    ) {
+      throw new Error(
+        "Postpin did not return a shipping price."
+      );
+    }
+
+    shippingPrice = Number(result.data.total);
+
+    const productsTotal = calculateProductsTotal();
+
+    const grandTotal =
+      productsTotal + shippingPrice;
+
+    document.getElementById("productsTotal").textContent =
+      "₹" + productsTotal.toFixed(2);
+
+    document.getElementById("shippingTotal").textContent =
+      "₹" + shippingPrice.toFixed(2);
+
+    document.getElementById("grandTotal").textContent =
+      "₹" + grandTotal.toFixed(2);
+
+    document.getElementById("shippingBox").style.display =
+      "block";
+
+  } catch (error) {
+
+    document.getElementById("error").textContent =
+      error.message;
+
+    document.getElementById("error").style.display =
+      "block";
+
+  }
+
+  button.disabled = false;
+  button.textContent = "CALCULATE SHIPPING";
+}
+
+function placeOrder() {
+
+  const productsTotal = calculateProductsTotal();
+
+  const grandTotal =
+    productsTotal + shippingPrice;
+
+  let message =
+    "Hi WALLFORM! I'd like to place an order:%0A%0A";
+
+  for (const code in currentCart) {
+
+    if (!products[code]) continue;
+
+    const quantity =
+      Number(currentCart[code]) || 0;
+
+    if (quantity <= 0) continue;
+
+    message +=
+      products[code].name +
+      " (" + code + ") × " +
+      quantity +
+      "%0A";
+  }
+
+  message +=
+    "%0AProducts: ₹" +
+    productsTotal.toFixed(2);
+
+  message +=
+    "%0AShipping: ₹" +
+    shippingPrice.toFixed(2);
+
+  message +=
+    "%0ATotal: ₹" +
+    grandTotal.toFixed(2);
+
+  message +=
+    "%0A%0APlease confirm the order and payment details.";
+
+  document.getElementById("success").style.display =
+    "block";
+
+  window.location.href =
+    "https://wa.me/918500670741?text=" +
+    message;
+}
+
+</script>
+
+</body>
+</html>
