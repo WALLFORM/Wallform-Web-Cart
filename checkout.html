@@ -1025,80 +1025,41 @@ function placeOrder() {
 
 
   /* =========================
-     FULL DELIVERY ADDRESS
-  ========================== */
+   FORMATTED DELIVERY ADDRESS
+========================= */
 
-  message +=
-    "%0A%0ADELIVERY DETAILS%0A";
+message +=
+  "%0A%0ADELIVERY DETAILS%0A";
 
+message +=
+  "Name: " +
+  encodeURIComponent(fullName) +
+  "%0A";
 
-  message +=
-    "Name: " +
-    encodeURIComponent(
-      fullName
-    ) +
-    "%0A";
+message +=
+  "Phone: " +
+  encodeURIComponent(phone) +
+  "%0A";
 
+const formattedAddress =
+  house +
+  ", " +
+  street +
+  ", " +
+  area +
+  ", " +
+  city +
+  ", " +
+  state +
+  " - " +
+  pin;
 
-  message +=
-    "Phone: " +
-    encodeURIComponent(
-      phone
-    ) +
-    "%0A";
+message +=
+  "DELIVERY ADDRESS: " +
+  encodeURIComponent(formattedAddress);
 
-
-  message +=
-    "House/Flat/Building: " +
-    encodeURIComponent(
-      house
-    ) +
-    "%0A";
-
-
-  message +=
-    "Street/Road: " +
-    encodeURIComponent(
-      street
-    ) +
-    "%0A";
-
-
-  message +=
-    "Area/Locality: " +
-    encodeURIComponent(
-      area
-    ) +
-    "%0A";
-
-
-  message +=
-    "City: " +
-    encodeURIComponent(
-      city
-    ) +
-    "%0A";
-
-
-  message +=
-    "State: " +
-    encodeURIComponent(
-      state
-    ) +
-    "%0A";
-
-
-  message +=
-    "PIN: " +
-    encodeURIComponent(
-      pin
-    );
-
-
-
-  message +=
-    "%0A%0APlease confirm the order and payment details.";
-
+message +=
+  "%0A%0APlease confirm the order and payment details.";
 
 
   /* =========================
