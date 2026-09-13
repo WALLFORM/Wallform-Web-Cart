@@ -76,11 +76,14 @@
     }
 
 
-    input {
+    input,
+    select {
 
       width: 100%;
 
       padding: 14px;
+
+      margin-bottom: 12px;
 
       background: #111;
 
@@ -91,6 +94,14 @@
       font-size: 16px;
 
       outline: none;
+
+    }
+
+
+    input:focus,
+    select:focus {
+
+      border-color: #fff;
 
     }
 
@@ -185,6 +196,28 @@
 
     }
 
+
+    #addressBox {
+
+      display: none;
+
+    }
+
+
+    .field-label {
+
+      display: block;
+
+      font-size: 12px;
+
+      color: #888;
+
+      margin-bottom: 6px;
+
+      letter-spacing: 0.5px;
+
+    }
+
   </style>
 
 </head>
@@ -199,6 +232,10 @@
   <h1>CHECKOUT</h1>
 
 
+  <!-- =========================
+       SHIPPING
+  ========================== -->
+
   <div class="section">
 
 
@@ -207,12 +244,17 @@
     </h2>
 
 
+    <span class="field-label">
+      Enter the PIN where the order will be delivered
+    </span>
+
+
     <input
       id="pin"
       type="text"
       inputmode="numeric"
       maxlength="6"
-      placeholder="Enter 6-digit PIN code"
+      placeholder="6-digit PIN code"
     >
 
 
@@ -234,6 +276,119 @@
   </div>
 
 
+
+  <!-- =========================
+       ADDRESS
+  ========================== -->
+
+  <div
+    id="addressBox"
+    class="section">
+
+
+    <h2>
+      Delivery Details
+    </h2>
+
+
+    <label class="field-label">
+      FULL NAME
+    </label>
+
+    <input
+      id="fullName"
+      type="text"
+      autocomplete="name"
+      placeholder="Full name"
+    >
+
+
+    <label class="field-label">
+      PHONE NUMBER
+    </label>
+
+    <input
+      id="phone"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel"
+      placeholder="10-digit phone number"
+    >
+
+
+    <label class="field-label">
+      HOUSE / FLAT / BUILDING
+    </label>
+
+    <input
+      id="house"
+      type="text"
+      autocomplete="street-address"
+      placeholder="House / Flat / Building number"
+    >
+
+
+    <label class="field-label">
+      STREET / ROAD
+    </label>
+
+    <input
+      id="street"
+      type="text"
+      placeholder="Street / Road"
+    >
+
+
+    <label class="field-label">
+      AREA / LOCALITY
+    </label>
+
+    <input
+      id="area"
+      type="text"
+      placeholder="Area / Locality"
+    >
+
+
+    <label class="field-label">
+      CITY
+    </label>
+
+    <input
+      id="city"
+      type="text"
+      autocomplete="address-level2"
+      placeholder="City"
+    >
+
+
+    <label class="field-label">
+      STATE
+    </label>
+
+    <input
+      id="state"
+      type="text"
+      autocomplete="address-level1"
+      placeholder="State"
+    >
+
+
+    <button
+      onclick="showOrderSummary()">
+
+      CONTINUE
+
+    </button>
+
+
+  </div>
+
+
+
+  <!-- =========================
+       ORDER SUMMARY
+  ========================== -->
 
   <div
     id="shippingBox"
@@ -284,7 +439,8 @@
     </div>
 
 
-    <button onclick="placeOrder()">
+    <button
+      onclick="placeOrder()">
 
       PLACE ORDER
 
@@ -310,10 +466,18 @@
 <script>
 
 
+/* =========================
+   WORKER
+========================= */
+
 const WORKER_URL =
   "https://wallformworker.edararampranav.workers.dev/";
 
 
+
+/* =========================
+   PRODUCTS
+========================= */
 
 const products = {
 
@@ -355,7 +519,13 @@ let shippingPrice = 0;
 
 let currentCart = {};
 
+let deliveryDetails = {};
 
+
+
+/* =========================
+   GET CART
+========================= */
 
 function getCart() {
 
@@ -365,7 +535,9 @@ function getCart() {
       localStorage.getItem("wallformCart");
 
 
-    if (!saved) return {};
+    if (!saved) {
+      return {};
+    }
 
 
     const parsed =
@@ -394,6 +566,10 @@ function getCart() {
 
 
 
+/* =========================
+   PRODUCTS TOTAL
+========================= */
+
 function calculateProductsTotal() {
 
   currentCart =
@@ -408,8 +584,9 @@ function calculateProductsTotal() {
   ) {
 
 
-    if (!products[code])
+    if (!products[code]) {
       continue;
+    }
 
 
     const quantity =
@@ -428,6 +605,10 @@ function calculateProductsTotal() {
 }
 
 
+
+/* =========================
+   SHIPPING
+========================= */
 
 async function calculateShipping() {
 
@@ -455,14 +636,11 @@ async function calculateShipping() {
 
   if (!/^\d{6}$/.test(pin)) {
 
-
     error.textContent =
       "Please enter a valid 6-digit PIN code.";
 
-
     error.style.display =
       "block";
-
 
     return;
 
@@ -574,9 +752,14 @@ async function calculateShipping() {
       grandTotal.toFixed(2);
 
 
+    /*
+      Only reveal the address form
+      after shipping has been calculated.
+    */
+
     document
       .getElementById(
-        "shippingBox"
+        "addressBox"
       )
       .style.display =
       "block";
@@ -611,7 +794,279 @@ async function calculateShipping() {
 
 
 
+/* =========================
+   ADDRESS VALIDATION
+========================= */
+
+function showOrderSummary() {
+
+
+  const fullName =
+    document
+      .getElementById("fullName")
+      .value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById("phone")
+      .value
+      .trim();
+
+
+  const house =
+    document
+      .getElementById("house")
+      .value
+      .trim();
+
+
+  const street =
+    document
+      .getElementById("street")
+      .value
+      .trim();
+
+
+  const area =
+    document
+      .getElementById("area")
+      .value
+      .trim();
+
+
+  const city =
+    document
+      .getElementById("city")
+      .value
+      .trim();
+
+
+  const state =
+    document
+      .getElementById("state")
+      .value
+      .trim();
+
+
+  const pin =
+    document
+      .getElementById("pin")
+      .value
+      .trim();
+
+
+  const error =
+    document.getElementById("error");
+
+
+  error.style.display =
+    "none";
+
+
+  /* =========================
+     REQUIRED FIELDS
+  ========================== */
+
+  if (!fullName) {
+
+    showError(
+      "Please enter your full name."
+    );
+
+    return;
+
+  }
+
+
+  if (!/^\d{10}$/.test(phone)) {
+
+    showError(
+      "Please enter a valid 10-digit phone number."
+    );
+
+    return;
+
+  }
+
+
+  if (!house) {
+
+    showError(
+      "Please enter your house, flat or building number."
+    );
+
+    return;
+
+  }
+
+
+  if (!street) {
+
+    showError(
+      "Please enter your street or road."
+    );
+
+    return;
+
+  }
+
+
+  if (!area) {
+
+    showError(
+      "Please enter your area or locality."
+    );
+
+    return;
+
+  }
+
+
+  if (!city) {
+
+    showError(
+      "Please enter your city."
+    );
+
+    return;
+
+  }
+
+
+  if (!state) {
+
+    showError(
+      "Please enter your state."
+    );
+
+    return;
+
+  }
+
+
+  if (!/^\d{6}$/.test(pin)) {
+
+    showError(
+      "Please enter a valid 6-digit PIN code."
+    );
+
+    return;
+
+  }
+
+
+  /* =========================
+     SAVE DETAILS
+  ========================== */
+
+  deliveryDetails = {
+
+    fullName: fullName,
+
+    phone: phone,
+
+    house: house,
+
+    street: street,
+
+    area: area,
+
+    city: city,
+
+    state: state,
+
+    pin: pin
+
+  };
+
+
+  /*
+    Keep the existing summary visible.
+    Nothing else changes here.
+  */
+
+  document
+    .getElementById(
+      "shippingBox"
+    )
+    .style.display =
+    "block";
+
+
+  document
+    .getElementById(
+      "shippingBox"
+    )
+    .scrollIntoView({
+
+      behavior: "smooth",
+
+      block: "start"
+
+    });
+
+}
+
+
+
+/* =========================
+   ERROR
+========================= */
+
+function showError(message) {
+
+  const error =
+    document.getElementById(
+      "error"
+    );
+
+
+  error.textContent =
+    message;
+
+
+  error.style.display =
+    "block";
+
+
+  error.scrollIntoView({
+
+    behavior: "smooth",
+
+    block: "center"
+
+  });
+
+}
+
+
+
+/* =========================
+   PLACE ORDER
+========================= */
+
 function placeOrder() {
+
+
+  /*
+    Make sure the customer has
+    filled the address first.
+  */
+
+  if (
+    !deliveryDetails.fullName
+  ) {
+
+    showError(
+      "Please complete your delivery details first."
+    );
+
+    return;
+
+  }
+
 
 
   const productsTotal =
@@ -623,8 +1078,22 @@ function placeOrder() {
     shippingPrice;
 
 
+
+  /*
+    Start WhatsApp message.
+  */
+
   let message =
-    "Hi WALLFORM! I'd like to place an order:%0A%0A";
+    "Hi WALLFORM! I'd like to place an order.%0A%0A";
+
+
+
+  /* =========================
+     ORDER
+  ========================== */
+
+  message +=
+    "*ORDER*%0A";
 
 
   for (
@@ -632,8 +1101,9 @@ function placeOrder() {
   ) {
 
 
-    if (!products[code])
+    if (!products[code]) {
       continue;
+    }
 
 
     const quantity =
@@ -642,8 +1112,9 @@ function placeOrder() {
       ) || 0;
 
 
-    if (quantity <= 0)
+    if (quantity <= 0) {
       continue;
+    }
 
 
     message +=
@@ -657,6 +1128,11 @@ function placeOrder() {
   }
 
 
+
+  /* =========================
+     PRICE
+  ========================== */
+
   message +=
     "%0AProducts: ₹" +
     productsTotal.toFixed(2);
@@ -668,8 +1144,74 @@ function placeOrder() {
 
 
   message +=
-    "%0ATotal: ₹" +
+    "%0A*Total: ₹" +
     grandTotal.toFixed(2);
+
+
+
+  /* =========================
+     DELIVERY DETAILS
+  ========================== */
+
+  message +=
+    "%0A%0A*DELIVERY DETAILS*";
+
+
+  message +=
+    "%0AName: " +
+    encodeURIComponent(
+      deliveryDetails.fullName
+    );
+
+
+  message +=
+    "%0APhone: " +
+    encodeURIComponent(
+      deliveryDetails.phone
+    );
+
+
+  message +=
+    "%0AHouse/Flat/Building: " +
+    encodeURIComponent(
+      deliveryDetails.house
+    );
+
+
+  message +=
+    "%0AStreet/Road: " +
+    encodeURIComponent(
+      deliveryDetails.street
+    );
+
+
+  message +=
+    "%0AArea/Locality: " +
+    encodeURIComponent(
+      deliveryDetails.area
+    );
+
+
+  message +=
+    "%0ACity: " +
+    encodeURIComponent(
+      deliveryDetails.city
+    );
+
+
+  message +=
+    "%0AState: " +
+    encodeURIComponent(
+      deliveryDetails.state
+    );
+
+
+  message +=
+    "%0APIN: " +
+    encodeURIComponent(
+      deliveryDetails.pin
+    );
+
 
 
   message +=
@@ -677,11 +1219,22 @@ function placeOrder() {
 
 
 
+  /*
+    Show confirmation text.
+  */
+
   document
-    .getElementById("success")
+    .getElementById(
+      "success"
+    )
     .style.display =
     "block";
 
+
+
+  /*
+    Open WhatsApp.
+  */
 
   window.location.href =
     "https://wa.me/918500670741?text=" +
