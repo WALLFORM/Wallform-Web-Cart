@@ -418,6 +418,7 @@
 </div>
 
 
+
 <script>
 
 
@@ -428,41 +429,37 @@
 const products = {
 
   "WF-001": {
-    name: "911 GT3 RS",
+    name: "Porsche 911 GT3 RS",
     price: 69
   },
 
   "WF-002": {
-    name: "F1 Stand",
-    price: 99
+    name: "F1 Car",
+    price: 89
   },
 
   "WF-003": {
-    name: "Japanese Landscape",
+    name: "Japanese Scenery",
     price: 89
   },
 
   "WF-004": {
-    name: "McLaren Logo",
-    price: 89
+    name: "Vintage Race Car",
+    price: 79
   },
 
   "WF-005": {
-    name: "Mercedes Logo",
+    name: "Batmobile",
     price: 89
   },
 
   "WF-006": {
-    name: "Ferrari Logo",
-    price: 79
-  },
-
-  "WF-007": {
-    name: "Minecraft Sword",
-    price: 179
+    name: "Check Engine Logo",
+    price: 149
   }
 
 };
+
 
 
 /* =========================
@@ -482,7 +479,6 @@ function getCart() {
 
     const parsed =
       JSON.parse(saved);
-
 
     if (Array.isArray(parsed)) {
 
@@ -521,6 +517,7 @@ function getCart() {
 }
 
 
+
 /* =========================
    SAVE CART
 ========================= */
@@ -533,6 +530,7 @@ function saveCart(cart) {
   );
 
 }
+
 
 
 /* =========================
@@ -548,6 +546,7 @@ function removeCart() {
 }
 
 
+
 /* =========================
    CART
 ========================= */
@@ -556,6 +555,7 @@ let cart = getCart();
 
 const cartElement =
   document.getElementById("cart");
+
 
 
 /* =========================
@@ -575,6 +575,7 @@ function renderCart() {
     });
 
 
+
   /* =========================
      EMPTY
   ========================= */
@@ -586,6 +587,7 @@ function renderCart() {
       <div class="empty">
         Your cart is empty.
       </div>
+
 
       <button
         type="button"
@@ -603,9 +605,11 @@ function renderCart() {
   }
 
 
+
   let total = 0;
 
   let html = "";
+
 
 
   /* =========================
@@ -646,6 +650,7 @@ function renderCart() {
         </div>
 
 
+
         <div class="item-right">
 
 
@@ -682,6 +687,7 @@ function renderCart() {
           </div>
 
 
+
           <div class="price">
 
             ₹${itemTotal}
@@ -697,6 +703,7 @@ function renderCart() {
     `;
 
   });
+
 
 
   /* =========================
@@ -718,14 +725,16 @@ function renderCart() {
     </div>
 
 
+
     <button
       type="button"
       class="main-button"
-      onclick="placeOrder()">
+      onclick="goToCheckout()">
 
-      PLACE ORDER
+      CHECK SHIPPING
 
     </button>
+
 
 
     <button
@@ -736,6 +745,7 @@ function renderCart() {
       CONTINUE SHOPPING
 
     </button>
+
 
 
     <button
@@ -754,6 +764,7 @@ function renderCart() {
     html;
 
 }
+
 
 
 /* =========================
@@ -794,87 +805,18 @@ function changeQuantity(code, amount) {
 }
 
 
+
 /* =========================
-   WHATSAPP
+   SHIPPING CHECKER
 ========================= */
 
-function placeOrder() {
-
-  const cartCodes =
-    Object.keys(cart).filter(code => {
-
-      return (
-        products[code] &&
-        Number(cart[code]) > 0
-      );
-
-    });
-
-
-  if (cartCodes.length === 0) {
-    return;
-  }
-
-
-  let message =
-    "Hi WALLFORM! I'd like to place an order:\n\n";
-
-
-  let total = 0;
-
-
-  cartCodes.forEach(code => {
-
-    const product =
-      products[code];
-
-    const quantity =
-      Number(cart[code]);
-
-
-    if (quantity > 1) {
-
-      message +=
-        product.name +
-        " " +
-        code +
-        " (x" +
-        quantity +
-        ")\n";
-
-    } else {
-
-      message +=
-        product.name +
-        " " +
-        code +
-        "\n";
-
-    }
-
-
-    total +=
-      product.price * quantity;
-
-  });
-
-
-  message +=
-    "\nProduct total: ₹" +
-    total +
-    "\n\n" +
-    "Please confirm the shipping cost and payment details.";
-
-
-  const encodedMessage =
-    encodeURIComponent(message);
-
+function goToCheckout() {
 
   window.location.href =
-    "https://wa.me/918500670741?text=" +
-    encodedMessage;
+    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
 
 }
+
 
 
 /* =========================
@@ -894,6 +836,7 @@ function closeCart() {
 }
 
 
+
 /* =========================
    CLEAR CART
 ========================= */
@@ -907,6 +850,7 @@ function clearCart() {
   renderCart();
 
 }
+
 
 
 /* =========================
