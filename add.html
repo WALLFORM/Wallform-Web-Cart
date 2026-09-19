@@ -2,48 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Adding to Cart...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WALLFORM</title>
 </head>
-<body style="background: #000; color: #fff; font-family: sans-serif; text-align: center; padding-top: 50px;">
-  <p>Adding to cart...</p>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("add");
 
-    // Canonical Product IDs including Custom Products
-    const validProducts = [
-      "WF-002", "WF-003", "WF-004", "WF-005", 
-      "WF-006", "WF-007", "WF-008", "WF-009"
-    ];
+<body>
 
-    function getCart() {
-      try {
-        const saved = localStorage.getItem("wallformCart");
-        if (!saved) return {};
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          const converted = {};
-          parsed.forEach(item => { converted[item] = (converted[item] || 0) + 1; });
-          return converted;
-        }
-        return (parsed && typeof parsed === "object") ? parsed : {};
-      } catch (error) {
-        return {};
-      }
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const code = params.get("add");
+
+const validProducts = [
+  "WF-001",
+  "WF-002",
+  "WF-003",
+  "WF-004",
+  "WF-005",
+  "WF-006"
+];
+
+function getCart() {
+
+  try {
+
+    const saved = localStorage.getItem("wallformCart");
+
+    if (!saved) return {};
+
+    const parsed = JSON.parse(saved);
+
+    if (Array.isArray(parsed)) {
+
+      const converted = {};
+
+      parsed.forEach(item => {
+        converted[item] =
+          (converted[item] || 0) + 1;
+      });
+
+      return converted;
     }
 
-    function saveCart(cart) {
-      localStorage.setItem("wallformCart", JSON.stringify(cart));
+    if (
+      parsed &&
+      typeof parsed === "object"
+    ) {
+      return parsed;
     }
 
-    if (validProducts.includes(code)) {
-      const cart = getCart();
-      cart[code] = (Number(cart[code]) || 0) + 1;
-      saveCart(cart);
-    }
+    return {};
 
-    // Redirect to cart
-    window.location.replace("https://wallform.github.io/Wallform-Web-Cart/cart.html");
-  </script>
+  } catch (error) {
+
+    return {};
+
+  }
+}
+
+function saveCart(cart) {
+  localStorage.setItem(
+    "wallformCart",
+    JSON.stringify(cart)
+  );
+}
+
+if (validProducts.includes(code)) {
+
+  const cart = getCart();
+
+  cart[code] =
+    (Number(cart[code]) || 0) + 1;
+
+  saveCart(cart);
+}
+
+window.location.replace(
+  "https://wallform.github.io/Wallform-Web-Cart/cart.html"
+);
+
+</script>
+
 </body>
 </html>

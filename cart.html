@@ -1,147 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Cart — WALLFORM</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>WALLFORM — Cart</title>
+
+
   <style>
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+
     body {
-      margin: 0; background: #000; color: #fff;
-      font-family: Arial, Helvetica, sans-serif; padding: 30px 20px;
+
+      margin: 0;
+
+      background: #000;
+
+      color: #fff;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     }
-    .cart-container { max-width: 600px; margin: auto; }
-    h1 { font-size: 32px; margin-bottom: 30px; letter-spacing: 1px; }
-    .cart-item {
-      display: flex; justify-content: space-between; align-items: center;
-      border: 1px solid #333; padding: 15px; margin-bottom: 15px;
+
+
+    .container {
+
+      max-width: 700px;
+
+      margin: 0 auto;
+
+      padding: 50px 25px;
+
     }
-    .item-details { display: flex; flex-direction: column; }
-    .item-name { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
-    .item-price { font-size: 14px; color: #aaa; }
-    .controls { display: flex; align-items: center; gap: 15px; }
-    .btn {
-      background: #222; color: #fff; border: 1px solid #444;
-      width: 35px; height: 35px; font-size: 18px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+
+
+    .logo {
+
+      font-size: 28px;
+
+      font-weight: 800;
+
+      letter-spacing: 3px;
+
+      margin-bottom: 5px;
+
     }
-    .btn:hover { background: #333; }
-    .qty { font-size: 16px; font-weight: bold; width: 20px; text-align: center; }
-    
-    .checkout-box {
-      margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;
+
+
+    .tagline {
+
+      font-size: 11px;
+
+      letter-spacing: 2px;
+
+      color: #888;
+
+      margin-bottom: 45px;
+
     }
-    .total-row {
-      display: flex; justify-content: space-between; 
-      font-size: 20px; font-weight: bold; margin-bottom: 20px;
+
+
+    h1 {
+
+      font-size: 32px;
+
+      margin: 0 0 30px 0;
+
     }
-    .checkout-btn {
-      width: 100%; background: #fff; color: #000; border: none;
-      padding: 15px; font-size: 16px; font-weight: bold; cursor: pointer;
+
+
+    .item {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 20px;
+
+      padding: 20px 0;
+
+      border-bottom: 1px solid #333;
+
+    }
+
+
+    .item-info {
+
+      flex: 1;
+
+      min-width: 0;
+
+    }
+
+
+    .item-name {
+
+      font-size: 16px;
+
+      font-weight: 600;
+
+    }
+
+
+    .item-code {
+
+      font-size: 12px;
+
+      color: #888;
+
+      margin-top: 5px;
+
+    }
+
+
+    .item-right {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 20px;
+
+    }
+
+
+    /* =========================
+       QUANTITY
+    ========================= */
+
+    .quantity-control {
+
+      display: flex;
+
+      align-items: center;
+
+      height: 42px;
+
+      border: 1px solid #555;
+
+    }
+
+
+    .quantity-button {
+
+      width: 42px;
+
+      height: 40px;
+
+      padding: 0;
+
+      margin: 0;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #000;
+
+      color: #fff;
+
+      border: none;
+
+      font-size: 24px;
+
+      cursor: pointer;
+
+      user-select: none;
+
+    }
+
+
+    .quantity-button:hover {
+
+      background: #fff;
+
+      color: #000;
+
+    }
+
+
+    .quantity-number {
+
+      width: 42px;
+
+      height: 40px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-left: 1px solid #555;
+
+      border-right: 1px solid #555;
+
+      font-size: 15px;
+
+      font-weight: 600;
+
+    }
+
+
+    .price {
+
+      min-width: 65px;
+
+      text-align: right;
+
+      font-weight: 600;
+
+      white-space: nowrap;
+
+    }
+
+
+    /* =========================
+       TOTAL
+    ========================= */
+
+    .total {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      padding: 25px 0;
+
+      font-size: 19px;
+
+      font-weight: 700;
+
+    }
+
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    button.main-button,
+    button.secondary {
+
+      width: 100%;
+
+      padding: 17px;
+
+      margin-top: 10px;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
       letter-spacing: 1px;
+
+      cursor: pointer;
+
     }
-    .empty-msg { color: #888; font-size: 16px; font-style: italic; }
+
+
+    .main-button {
+
+      background: #fff;
+
+      color: #000;
+
+      border: 1px solid #fff;
+
+    }
+
+
+    .main-button:hover {
+
+      background: #ddd;
+
+    }
+
+
+    .secondary {
+
+      background: #000;
+
+      color: #fff;
+
+      border: 1px solid #444;
+
+    }
+
+
+    .secondary:hover {
+
+      background: #111;
+
+      border-color: #777;
+
+    }
+
+
+    .clear {
+
+      color: #666;
+
+      border-color: #222;
+
+      margin-top: 20px !important;
+
+    }
+
+
+    .clear:hover {
+
+      color: #aaa;
+
+    }
+
+
+    .empty {
+
+      color: #888;
+
+      line-height: 1.6;
+
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 550px) {
+
+      .container {
+
+        padding: 35px 20px;
+
+      }
+
+
+      .item {
+
+        align-items: flex-start;
+
+      }
+
+
+      .item-right {
+
+        flex-direction: column;
+
+        align-items: flex-end;
+
+        gap: 10px;
+
+      }
+
+
+      .item-name {
+
+        font-size: 15px;
+
+      }
+
+
+      .price {
+
+        min-width: auto;
+
+      }
+
+    }
+
   </style>
+
 </head>
+
+
 <body>
 
-<div class="cart-container">
-  <h1>CART</h1>
-  <div id="cartItems"></div>
-  
-  <div class="checkout-box" id="checkoutBox" style="display: none;">
-    <div class="total-row">
-      <span>Total</span>
-      <span id="cartTotal">₹0</span>
-    </div>
-    <button class="checkout-btn" onclick="window.location.href='checkout.html'">PROCEED TO CHECKOUT</button>
+
+<div class="container">
+
+
+  <div class="logo">
+    WALLFORM
   </div>
+
+
+  <div class="tagline">
+    DECOR YOUR WAY.
+  </div>
+
+
+  <h1>
+    Your Cart
+  </h1>
+
+
+  <div id="cart"></div>
+
+
 </div>
 
+
+
 <script>
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
 const products = {
-  "WF-002": { name: "Porsche 911 GT3RS Mini", price: 99 },
-  "WF-003": { name: "F1 Car Mini", price: 99 },
-  "WF-004": { name: "Japanese Scenery Mini", price: 99 },
-  "WF-005": { name: "Vintage Race Car Mini", price: 99 },
-  "WF-006": { name: "Batmobile Mini", price: 99 },
-  "WF-007": { name: "Check Engine Logo", price: 119 },
-  "WF-008": { name: "Custom Name Plate", price: 149 },
-  "WF-009": { name: "Custom Prints", price: 220 }
+
+  "WF-001": {
+    name: "Porsche 911 GT3 RS",
+    price: 69
+  },
+
+  "WF-002": {
+    name: "F1 Car",
+    price: 89
+  },
+
+  "WF-003": {
+    name: "Japanese Scenery",
+    price: 89
+  },
+
+  "WF-004": {
+    name: "Vintage Race Car",
+    price: 79
+  },
+
+  "WF-005": {
+    name: "Batmobile",
+    price: 89
+  },
+
+  "WF-006": {
+    name: "Check Engine Logo",
+    price: 149
+  }
+
 };
 
+
+
+/* =========================
+   GET CART
+========================= */
+
 function getCart() {
+
   try {
-    const saved = localStorage.getItem("wallformCart");
-    if (!saved) return {};
-    return JSON.parse(saved);
-  } catch (e) {
+
+    const saved =
+      localStorage.getItem("wallformCart");
+
+    if (!saved) {
+      return {};
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    if (Array.isArray(parsed)) {
+
+      const converted = {};
+
+      parsed.forEach(code => {
+
+        converted[code] =
+          (converted[code] || 0) + 1;
+
+      });
+
+      return converted;
+
+    }
+
+
+    if (
+      parsed &&
+      typeof parsed === "object"
+    ) {
+
+      return parsed;
+
+    }
+
+
     return {};
+
+  } catch (error) {
+
+    return {};
+
   }
+
 }
+
+
+
+/* =========================
+   SAVE CART
+========================= */
 
 function saveCart(cart) {
-  localStorage.setItem("wallformCart", JSON.stringify(cart));
+
+  localStorage.setItem(
+    "wallformCart",
+    JSON.stringify(cart)
+  );
+
 }
 
-function updateQty(code, change) {
-  const cart = getCart();
-  const current = Number(cart[code]) || 0;
-  const newQty = current + change;
-  
-  if (newQty <= 0) {
-    delete cart[code];
-  } else {
-    cart[code] = newQty;
-  }
-  
-  saveCart(cart);
-  renderCart();
+
+
+/* =========================
+   CLEAR CART
+========================= */
+
+function removeCart() {
+
+  localStorage.removeItem(
+    "wallformCart"
+  );
+
 }
+
+
+
+/* =========================
+   CART
+========================= */
+
+let cart = getCart();
+
+const cartElement =
+  document.getElementById("cart");
+
+
+
+/* =========================
+   RENDER
+========================= */
 
 function renderCart() {
-  const cart = getCart();
-  const container = document.getElementById("cartItems");
-  const checkoutBox = document.getElementById("checkoutBox");
-  const totalEl = document.getElementById("cartTotal");
-  
-  container.innerHTML = "";
-  let total = 0;
-  let hasItems = false;
 
-  for (const code in cart) {
-    if (!products[code]) continue;
-    hasItems = true;
-    const qty = cart[code];
-    const item = products[code];
-    total += item.price * qty;
+  const cartCodes =
+    Object.keys(cart).filter(code => {
 
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    div.innerHTML = `
-      <div class="item-details">
-        <span class="item-name">${item.name}</span>
-        <span class="item-price">₹${item.price} x ${qty}</span>
+      return (
+        products[code] &&
+        Number(cart[code]) > 0
+      );
+
+    });
+
+
+
+  /* =========================
+     EMPTY
+  ========================= */
+
+  if (cartCodes.length === 0) {
+
+    cartElement.innerHTML = `
+
+      <div class="empty">
+        Your cart is empty.
       </div>
-      <div class="controls">
-        <button class="btn" onclick="updateQty('${code}', -1)">-</button>
-        <span class="qty">${qty}</span>
-        <button class="btn" onclick="updateQty('${code}', 1)">+</button>
-      </div>
+
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="closeCart()">
+
+        CONTINUE SHOPPING
+
+      </button>
+
     `;
-    container.appendChild(div);
+
+    return;
+
   }
 
-  if (hasItems) {
-    checkoutBox.style.display = "block";
-    totalEl.textContent = "₹" + total;
-  } else {
-    checkoutBox.style.display = "none";
-    container.innerHTML = "<p class='empty-msg'>Your cart is empty.</p>";
-  }
+
+
+  let total = 0;
+
+  let html = "";
+
+
+
+  /* =========================
+     ITEMS
+  ========================= */
+
+  cartCodes.forEach(code => {
+
+    const product =
+      products[code];
+
+    const quantity =
+      Number(cart[code]);
+
+
+    const itemTotal =
+      product.price * quantity;
+
+
+    total += itemTotal;
+
+
+    html += `
+
+      <div class="item">
+
+
+        <div class="item-info">
+
+          <div class="item-name">
+            ${product.name}
+          </div>
+
+          <div class="item-code">
+            ${code}
+          </div>
+
+        </div>
+
+
+
+        <div class="item-right">
+
+
+          <div class="quantity-control">
+
+
+            <button
+              type="button"
+              class="quantity-button"
+              onclick="changeQuantity('${code}', -1)">
+
+              −
+
+            </button>
+
+
+            <div class="quantity-number">
+
+              ${quantity}
+
+            </div>
+
+
+            <button
+              type="button"
+              class="quantity-button"
+              onclick="changeQuantity('${code}', 1)">
+
+              +
+
+            </button>
+
+
+          </div>
+
+
+
+          <div class="price">
+
+            ₹${itemTotal}
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+    `;
+
+  });
+
+
+
+  /* =========================
+     TOTAL + BUTTONS
+  ========================= */
+
+  html += `
+
+    <div class="total">
+
+      <span>
+        Product Total
+      </span>
+
+      <span>
+        ₹${total}
+      </span>
+
+    </div>
+
+
+
+    <button
+      type="button"
+      class="main-button"
+      onclick="goToCheckout()">
+
+      CHECK SHIPPING
+
+    </button>
+
+
+
+    <button
+      type="button"
+      class="secondary"
+      onclick="closeCart()">
+
+      CONTINUE SHOPPING
+
+    </button>
+
+
+
+    <button
+      type="button"
+      class="secondary clear"
+      onclick="clearCart()">
+
+      CLEAR CART
+
+    </button>
+
+  `;
+
+
+  cartElement.innerHTML =
+    html;
+
 }
 
+
+
+/* =========================
+   QUANTITY
+========================= */
+
+function changeQuantity(code, amount) {
+
+  if (!products[code]) {
+    return;
+  }
+
+
+  const current =
+    Number(cart[code] || 0);
+
+
+  const newQuantity =
+    current + amount;
+
+
+  if (newQuantity <= 0) {
+
+    delete cart[code];
+
+  } else {
+
+    cart[code] =
+      newQuantity;
+
+  }
+
+
+  saveCart(cart);
+
+  renderCart();
+
+}
+
+
+
+/* =========================
+   SHIPPING CHECKER
+========================= */
+
+function goToCheckout() {
+
+  window.location.href =
+    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
+
+}
+
+
+
+/* =========================
+   CLOSE CART
+========================= */
+
+function closeCart() {
+
+  /*
+    Do NOT redirect anywhere.
+
+    Just close this cart tab.
+  */
+
+  window.close();
+
+}
+
+
+
+/* =========================
+   CLEAR CART
+========================= */
+
+function clearCart() {
+
+  removeCart();
+
+  cart = {};
+
+  renderCart();
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
 renderCart();
+
+
 </script>
+
+
 </body>
+
 </html>
