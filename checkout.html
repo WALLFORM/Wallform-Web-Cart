@@ -1,1089 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — WALLFORM</title>
-
   <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 30px 20px;
+      margin: 0; background: #000; color: #fff;
+      font-family: Arial, Helvetica, sans-serif; padding: 30px 20px;
     }
+    .checkout-wrapper { max-width: 600px; margin: auto; }
+    h1 { font-size: 32px; margin-bottom: 30px; letter-spacing: 1px; }
+    h2 { font-size: 20px; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    
+    .step-container { display: none; }
+    .step-container.active { display: block; animation: fadeIn 0.3s ease; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .checkout {
-      max-width: 600px;
-      margin: auto;
+    .section { border: 1px solid #333; padding: 20px; margin-bottom: 20px; background: #050505; }
+    
+    input, textarea {
+      width: 100%; padding: 14px; margin-bottom: 15px;
+      background: #111; color: #fff; border: 1px solid #444;
+      font-size: 16px; outline: none; font-family: inherit;
     }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 30px;
-    }
-
-    .section {
-      border: 1px solid #333;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .section h2 {
-      font-size: 18px;
-      margin-top: 0;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
-      background: #111;
-      color: #fff;
-      border: 1px solid #444;
-      font-size: 16px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #fff;
-    }
-
+    input:focus, textarea:focus { border-color: #fff; }
+    
     button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 12px;
-      border: none;
-      background: #fff;
-      color: #000;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
+      width: 100%; padding: 16px; margin-top: 10px; border: none;
+      background: #fff; color: #000; font-size: 15px; font-weight: bold; 
+      cursor: pointer; letter-spacing: 1px;
     }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .btn-secondary {
+      background: #222; color: #fff; border: 1px solid #555;
     }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      margin: 12px 0;
-      color: #ccc;
+    
+    .row { display: flex; justify-content: space-between; margin: 12px 0; color: #ccc; }
+    .total { border-top: 1px solid #333; padding-top: 15px; margin-top: 15px; font-size: 20px; font-weight: bold; color: #fff; }
+    
+    .error { color: #ff6b6b; margin-top: 12px; display: none; text-align: center; }
+    .success { color: #7cff9b; margin-top: 12px; display: none; text-align: center; }
+    
+    .field-label { display: block; font-size: 12px; color: #888; margin-bottom: 6px; letter-spacing: 0.5px; }
+    
+    #shippingBox { display: none; }
+    
+    .back-link {
+      display: inline-block; color: #888; cursor: pointer; 
+      margin-bottom: 20px; font-size: 14px;
     }
-
-    .total {
-      border-top: 1px solid #333;
-      padding-top: 15px;
-      margin-top: 15px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #fff;
+    .back-link:hover { color: #fff; }
+    
+    .info-box {
+      background: #111; border-left: 3px solid #fff; padding: 15px;
+      margin-bottom: 20px; font-size: 14px; line-height: 1.5; color: #ddd;
     }
-
-    .error {
-      color: #ff6b6b;
-      margin-top: 12px;
-      display: none;
-    }
-
-    .success {
-      color: #7cff9b;
-      margin-top: 12px;
-      display: none;
-    }
-
-    #shippingBox {
-      display: none;
-    }
-
-    .field-label {
-      display: block;
-      font-size: 12px;
-      color: #888;
-      margin-bottom: 6px;
-      letter-spacing: 0.5px;
-    }
-
   </style>
-
 </head>
-
-
 <body>
 
+<div class="checkout-wrapper">
+  
+  <!-- STEP 1: STANDARD CHECKOUT & SHIPPING -->
+  <div id="step-checkout" class="step-container active">
+    <h1>CHECKOUT</h1>
+    <div class="section">
+      <h2>Delivery Details</h2>
+      
+      <label class="field-label">FULL NAME</label>
+      <input id="fullName" type="text" autocomplete="name" placeholder="Full name">
 
-<div class="checkout">
+      <label class="field-label">PHONE NUMBER</label>
+      <input id="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit phone number">
 
+      <label class="field-label">HOUSE / FLAT / BUILDING</label>
+      <input id="house" type="text" autocomplete="street-address" placeholder="House / Flat / Building">
 
-  <h1>CHECKOUT</h1>
+      <label class="field-label">STREET / ROAD</label>
+      <input id="street" type="text" placeholder="Street / Road">
 
+      <label class="field-label">AREA / LOCALITY</label>
+      <input id="area" type="text" placeholder="Area / Locality">
 
-  <!-- =========================
-       DELIVERY FORM
-  ========================== -->
+      <label class="field-label">CITY</label>
+      <input id="city" type="text" autocomplete="address-level2" placeholder="City">
 
-  <div class="section">
+      <label class="field-label">STATE</label>
+      <input id="state" type="text" autocomplete="address-level1" placeholder="State">
 
-    <h2>Delivery Details</h2>
+      <label class="field-label">PIN CODE</label>
+      <input id="pin" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="6-digit PIN code">
 
+      <button id="calculateBtn" onclick="calculateShipping()">CALCULATE SHIPPING</button>
+      <div id="error-checkout" class="error"></div>
+    </div>
 
-    <label class="field-label">
-      FULL NAME
-    </label>
+    <!-- ORDER SUMMARY (Shown after shipping calculated) -->
+    <div id="shippingBox" class="section">
+      <h2>Order Summary</h2>
+      <div class="row">
+        <span>Products</span>
+        <span id="productsTotal">₹0.00</span>
+      </div>
+      <div class="row">
+        <span>Shipping</span>
+        <span id="shippingTotal">₹0.00</span>
+      </div>
+      <div class="row total">
+        <span>Total</span>
+        <span id="grandTotal">₹0.00</span>
+      </div>
 
-    <input
-      id="fullName"
-      type="text"
-      autocomplete="name"
-      placeholder="Full name"
-    >
-
-
-    <label class="field-label">
-      PHONE NUMBER
-    </label>
-
-    <input
-      id="phone"
-      type="tel"
-      inputmode="numeric"
-      maxlength="10"
-      autocomplete="tel"
-      placeholder="10-digit phone number"
-    >
-
-
-    <label class="field-label">
-      HOUSE / FLAT / BUILDING
-    </label>
-
-    <input
-      id="house"
-      type="text"
-      autocomplete="street-address"
-      placeholder="House / Flat / Building"
-    >
-
-
-    <label class="field-label">
-      STREET / ROAD
-    </label>
-
-    <input
-      id="street"
-      type="text"
-      placeholder="Street / Road"
-    >
-
-
-    <label class="field-label">
-      AREA / LOCALITY
-    </label>
-
-    <input
-      id="area"
-      type="text"
-      placeholder="Area / Locality"
-    >
-
-
-    <label class="field-label">
-      CITY
-    </label>
-
-    <input
-      id="city"
-      type="text"
-      autocomplete="address-level2"
-      placeholder="City"
-    >
-
-
-    <label class="field-label">
-      STATE
-    </label>
-
-    <input
-      id="state"
-      type="text"
-      autocomplete="address-level1"
-      placeholder="State"
-    >
-
-
-    <label class="field-label">
-      PIN CODE
-    </label>
-
-    <input
-      id="pin"
-      type="text"
-      inputmode="numeric"
-      maxlength="6"
-      autocomplete="postal-code"
-      placeholder="6-digit PIN code"
-    >
-
-
-    <button
-      id="calculateBtn"
-      onclick="calculateShipping()"
-    >
-      CALCULATE SHIPPING
-    </button>
-
-
-    <div
-      id="error"
-      class="error"
-    ></div>
-
+      <button id="mainActionBtn" onclick="handleCheckoutNext()">PLACE ORDER</button>
+    </div>
   </div>
 
+  <!-- STEP 2: CUSTOM NAME PLATE (WF-008) -->
+  <div id="step-nameplate" class="step-container">
+    <div class="back-link" onclick="goToStep('step-checkout')">← Back to Delivery</div>
+    <h1>CUSTOMIZE</h1>
+    <div class="section">
+      <h2>Name Plate Details</h2>
+      <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">You added a Custom Name Plate (WF-008) to your cart. Please provide the details below.</p>
+      
+      <label class="field-label">NAME TO PRINT *</label>
+      <input id="npName" type="text" placeholder="E.g., Rahul's Room, GT3RS">
 
-
-  <!-- =========================
-       ORDER SUMMARY
-  ========================== -->
-
-  <div
-    id="shippingBox"
-    class="section"
-  >
-
-    <h2>Order Summary</h2>
-
-
-    <div class="row">
-
-      <span>
-        Products
-      </span>
-
-      <span id="productsTotal">
-        ₹0
-      </span>
-
+      <label class="field-label">FONT / DESIGN REQUESTS (Optional)</label>
+      <textarea id="npRequests" rows="3" placeholder="Specify font choice, style, or extra requirements"></textarea>
+      
+      <div id="error-nameplate" class="error"></div>
+      <button onclick="handleNameplateNext()">CONTINUE</button>
     </div>
-
-
-    <div class="row">
-
-      <span>
-        Shipping
-      </span>
-
-      <span id="shippingTotal">
-        ₹0
-      </span>
-
-    </div>
-
-
-    <div class="row total">
-
-      <span>
-        Total
-      </span>
-
-      <span id="grandTotal">
-        ₹0
-      </span>
-
-    </div>
-
-
-    <button
-      onclick="placeOrder()"
-    >
-      PLACE ORDER
-    </button>
-
-
-    <div
-      id="success"
-      class="success"
-    >
-      Opening WhatsApp...
-    </div>
-
   </div>
 
+  <!-- STEP 3: CUSTOM PARTS / PRINTS (WF-009) -->
+  <div id="step-customprint" class="step-container">
+    <div class="back-link" onclick="backFromCustomPrint()">← Back</div>
+    <h1>CUSTOM PRINTS</h1>
+    <div class="section">
+      <h2>Upload Instructions</h2>
+      
+      <div class="info-box">
+        <strong>How to send your 3D files:</strong><br><br>
+        Because 3D models require review, you will attach your <strong>.STL</strong> or <strong>.3MF</strong> file directly in WhatsApp after clicking 'Place Order'.<br><br>
+        We will review the file and confirm if it falls within the standard WF-009 pricing or requires a custom quote.
+      </div>
+
+      <label class="field-label">PRINT NOTES / REQUIREMENTS (Optional)</label>
+      <textarea id="cpNotes" rows="4" placeholder="Mention dimensions, required color, layer height, or specific material preferences..."></textarea>
+      
+      <button onclick="submitToWhatsApp()">PLACE ORDER VIA WHATSAPP</button>
+      <div id="success-msg" class="success">Opening WhatsApp...</div>
+    </div>
+  </div>
 
 </div>
 
-
-
 <script>
-
-
-/* =========================
-   WORKER
-========================= */
-
-const WORKER_URL =
-  "https://wallformworker.edararampranav.workers.dev/";
-
-
-
-/* =========================
-   PRODUCTS
-========================= */
+const WORKER_URL = "https://wallformworker.edararampranav.workers.dev/";
 
 const products = {
-
-  "WF-001": {
-    name: "Porsche 911 GT3 RS",
-    price: 69
-  },
-
-  "WF-002": {
-    name: "F1 Car",
-    price: 89
-  },
-
-  "WF-003": {
-    name: "Japanese Scenery",
-    price: 89
-  },
-
-  "WF-004": {
-    name: "Vintage Race Car",
-    price: 79
-  },
-
-  "WF-005": {
-    name: "Batmobile",
-    price: 89
-  },
-
-  "WF-006": {
-    name: "Check Engine Logo",
-    price: 149
-  }
-
+  "WF-002": { name: "Porsche 911 GT3RS Mini", price: 99 },
+  "WF-003": { name: "F1 Car Mini", price: 99 },
+  "WF-004": { name: "Japanese Scenery Mini", price: 99 },
+  "WF-005": { name: "Vintage Race Car Mini", price: 99 },
+  "WF-006": { name: "Batmobile Mini", price: 99 },
+  "WF-007": { name: "Check Engine Logo", price: 119 },
+  "WF-008": { name: "Custom Name Plate", price: 149 },
+  "WF-009": { name: "Custom Prints", price: 220 }
 };
 
-
-
-let shippingPrice = 0;
-
 let currentCart = {};
+let shippingPrice = 0;
+let hasNameplate = false;
+let hasCustomPrint = false;
 
-
-
-/* =========================
-   GET CART
-========================= */
-
-function getCart() {
-
+// Initialize
+function init() {
   try {
-
-    const saved =
-      localStorage.getItem("wallformCart");
-
-
-    if (!saved) {
-      return {};
+    const saved = localStorage.getItem("wallformCart");
+    if (saved) {
+      currentCart = JSON.parse(saved);
     }
+  } catch (e) {}
 
+  hasNameplate = (currentCart["WF-008"] > 0);
+  hasCustomPrint = (currentCart["WF-009"] > 0);
 
-    const parsed =
-      JSON.parse(saved);
-
-
-    if (
-      parsed &&
-      typeof parsed === "object"
-    ) {
-
-      return parsed;
-
-    }
-
-
-    return {};
-
-  } catch (error) {
-
-    return {};
-
+  // Update main button text if custom steps exist
+  const mainBtn = document.getElementById("mainActionBtn");
+  if (hasNameplate || hasCustomPrint) {
+    mainBtn.textContent = "CONTINUE TO CUSTOMIZATION";
   }
-
 }
-
-
-
-/* =========================
-   PRODUCTS TOTAL
-========================= */
+init();
 
 function calculateProductsTotal() {
-
-  currentCart =
-    getCart();
-
-
   let total = 0;
-
-
-  for (
-    const code in currentCart
-  ) {
-
-    if (!products[code]) {
-      continue;
+  for (const code in currentCart) {
+    if (products[code]) {
+      total += products[code].price * (Number(currentCart[code]) || 0);
     }
-
-
-    const quantity =
-      Number(currentCart[code]) || 0;
-
-
-    total +=
-      products[code].price *
-      quantity;
-
   }
-
-
   return total;
-
 }
 
+function showError(step, message) {
+  const errorEl = document.getElementById(`error-${step}`);
+  errorEl.textContent = message;
+  errorEl.style.display = "block";
+}
+function clearError(step) {
+  document.getElementById(`error-${step}`).style.display = "none";
+}
 
+// UI Navigation
+function goToStep(stepId) {
+  document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-/* =========================
-   CALCULATE SHIPPING
-========================= */
+function backFromCustomPrint() {
+  if (hasNameplate) {
+    goToStep('step-nameplate');
+  } else {
+    goToStep('step-checkout');
+  }
+}
 
+// Shipping Logic
 async function calculateShipping() {
+  clearError('checkout');
+  
+  const fullName = document.getElementById("fullName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const house = document.getElementById("house").value.trim();
+  const street = document.getElementById("street").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const state = document.getElementById("state").value.trim();
+  const pin = document.getElementById("pin").value.trim();
+  const button = document.getElementById("calculateBtn");
 
-
-  const fullName =
-    document
-      .getElementById("fullName")
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById("phone")
-      .value
-      .trim();
-
-
-  const house =
-    document
-      .getElementById("house")
-      .value
-      .trim();
-
-
-  const street =
-    document
-      .getElementById("street")
-      .value
-      .trim();
-
-
-  const area =
-    document
-      .getElementById("area")
-      .value
-      .trim();
-
-
-  const city =
-    document
-      .getElementById("city")
-      .value
-      .trim();
-
-
-  const state =
-    document
-      .getElementById("state")
-      .value
-      .trim();
-
-
-  const pin =
-    document
-      .getElementById("pin")
-      .value
-      .trim();
-
-
-  const error =
-    document.getElementById("error");
-
-
-  const button =
-    document.getElementById(
-      "calculateBtn"
-    );
-
-
-  error.style.display =
-    "none";
-
-
-  /* =========================
-     VALIDATE FORM
-  ========================== */
-
-  if (!fullName) {
-
-    showError(
-      "Please enter your full name."
-    );
-
-    return;
-
+  if (!fullName || !phone || !house || !street || !city || !state || !pin) {
+    return showError('checkout', "Please fill in all address fields before calculating.");
   }
-
-
-  if (!/^\d{10}$/.test(phone)) {
-
-    showError(
-      "Please enter a valid 10-digit phone number."
-    );
-
-    return;
-
-  }
-
-
-  if (!house) {
-
-    showError(
-      "Please enter your house, flat or building."
-    );
-
-    return;
-
-  }
-
-
-  if (!street) {
-
-    showError(
-      "Please enter your street or road."
-    );
-
-    return;
-
-  }
-
-
-  if (!area) {
-
-    showError(
-      "Please enter your area or locality."
-    );
-
-    return;
-
-  }
-
-
-  if (!city) {
-
-    showError(
-      "Please enter your city."
-    );
-
-    return;
-
-  }
-
-
-  if (!state) {
-
-    showError(
-      "Please enter your state."
-    );
-
-    return;
-
-  }
-
-
   if (!/^\d{6}$/.test(pin)) {
-
-    showError(
-      "Please enter a valid 6-digit PIN code."
-    );
-
-    return;
-
+    return showError('checkout', "Please enter a valid 6-digit PIN code.");
+  }
+  if (!/^\d{10}$/.test(phone)) {
+    return showError('checkout', "Please enter a valid 10-digit phone number.");
   }
 
-
-  /* =========================
-     DISABLE BUTTON
-  ========================== */
-
-  button.disabled =
-    true;
-
-  button.textContent =
-    "CALCULATING...";
-
+  button.disabled = true;
+  button.textContent = "CALCULATING...";
 
   try {
+    const response = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ destination: pin })
+    });
 
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Unable to calculate shipping.");
+    if (!result.data || result.data.total == null) throw new Error("Shipping provider did not return a price.");
 
-    /* =========================
-       SEND PIN TO WORKER
-    ========================== */
+    shippingPrice = Number(result.data.total);
+    const productsTotal = calculateProductsTotal();
+    const grandTotal = productsTotal + shippingPrice;
 
-    const response =
-      await fetch(
-        WORKER_URL,
-        {
+    document.getElementById("productsTotal").textContent = "₹" + productsTotal.toFixed(2);
+    document.getElementById("shippingTotal").textContent = "₹" + shippingPrice.toFixed(2);
+    document.getElementById("grandTotal").textContent = "₹" + grandTotal.toFixed(2);
 
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-              destination: pin
-            })
-
-        }
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        result.error ||
-        "Unable to calculate shipping."
-      );
-
-    }
-
-
-    if (
-      !result.data ||
-      result.data.total == null
-    ) {
-
-      throw new Error(
-        "Postpin did not return a shipping price."
-      );
-
-    }
-
-
-    /* =========================
-       SAVE SHIPPING
-    ========================== */
-
-    shippingPrice =
-      Number(
-        result.data.total
-      );
-
-
-    /* =========================
-       CALCULATE TOTALS
-    ========================== */
-
-    const productsTotal =
-      calculateProductsTotal();
-
-
-    const grandTotal =
-      productsTotal +
-      shippingPrice;
-
-
-    document
-      .getElementById(
-        "productsTotal"
-      )
-      .textContent =
-      "₹" +
-      productsTotal.toFixed(2);
-
-
-    document
-      .getElementById(
-        "shippingTotal"
-      )
-      .textContent =
-      "₹" +
-      shippingPrice.toFixed(2);
-
-
-    document
-      .getElementById(
-        "grandTotal"
-      )
-      .textContent =
-      "₹" +
-      grandTotal.toFixed(2);
-
-
-    /* =========================
-       SHOW SUMMARY
-    ========================== */
-
-    document
-      .getElementById(
-        "shippingBox"
-      )
-      .style.display =
-      "block";
-
-
-    document
-      .getElementById(
-        "shippingBox"
-      )
-      .scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "start"
-
-      });
-
-
-  } catch (error) {
-
-
-    showError(
-      error.message
-    );
-
+    document.getElementById("shippingBox").style.display = "block";
+    button.style.display = "none"; // Hide calculate button once successful
+    
+  } catch (err) {
+    showError('checkout', err.message);
+    button.disabled = false;
+    button.textContent = "CALCULATE SHIPPING";
   }
-
-
-  button.disabled =
-    false;
-
-  button.textContent =
-    "CALCULATE SHIPPING";
-
 }
 
+// Step 1 to Next
+function handleCheckoutNext() {
+  if (shippingPrice <= 0) {
+    return showError('checkout', "Please calculate shipping first.");
+  }
 
-
-/* =========================
-   ERROR
-========================= */
-
-function showError(message) {
-
-  const error =
-    document.getElementById(
-      "error"
-    );
-
-
-  error.textContent =
-    message;
-
-
-  error.style.display =
-    "block";
-
-
+  if (hasNameplate) {
+    goToStep('step-nameplate');
+  } else if (hasCustomPrint) {
+    goToStep('step-customprint');
+  } else {
+    // Normal products only
+    submitToWhatsApp();
+  }
 }
 
-
-
-/* =========================
-   PLACE ORDER
-========================= */
-
-function placeOrder() {
-
-
-  /*
-    Make absolutely sure
-    shipping was calculated.
-  */
-
-  if (
-    shippingPrice <= 0
-  ) {
-
-    showError(
-      "Please calculate shipping first."
-    );
-
-    return;
-
+// Step 2 to Next
+function handleNameplateNext() {
+  clearError('nameplate');
+  const nameVal = document.getElementById("npName").value.trim();
+  
+  if (!nameVal) {
+    return showError('nameplate', "Please enter the name to print on the plate.");
   }
 
-
-  /* =========================
-     GET FORM DETAILS
-  ========================== */
-
-  const fullName =
-    document
-      .getElementById("fullName")
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById("phone")
-      .value
-      .trim();
-
-
-  const house =
-    document
-      .getElementById("house")
-      .value
-      .trim();
-
-
-  const street =
-    document
-      .getElementById("street")
-      .value
-      .trim();
-
-
-  const area =
-    document
-      .getElementById("area")
-      .value
-      .trim();
-
-
-  const city =
-    document
-      .getElementById("city")
-      .value
-      .trim();
-
-
-  const state =
-    document
-      .getElementById("state")
-      .value
-      .trim();
-
-
-  const pin =
-    document
-      .getElementById("pin")
-      .value
-      .trim();
-
-
-
-  /* =========================
-     FINAL VALIDATION
-  ========================== */
-
-  if (!fullName ||
-      !phone ||
-      !house ||
-      !street ||
-      !area ||
-      !city ||
-      !state ||
-      !/^\d{6}$/.test(pin)
-  ) {
-
-    showError(
-      "Please complete all delivery details."
-    );
-
-    return;
-
+  if (hasCustomPrint) {
+    goToStep('step-customprint');
+  } else {
+    submitToWhatsApp();
   }
-
-
-  if (!/^\d{10}$/.test(phone)) {
-
-    showError(
-      "Please enter a valid 10-digit phone number."
-    );
-
-    return;
-
-  }
-
-
-
-  /* =========================
-     TOTALS
-  ========================== */
-
-  const productsTotal =
-    calculateProductsTotal();
-
-
-  const grandTotal =
-    productsTotal +
-    shippingPrice;
-
-
-
-  /* =========================
-     WHATSAPP MESSAGE
-  ========================== */
-
-  let message =
-    "Hi WALLFORM! I'd like to place an order:%0A%0A";
-
-
-  message +=
-    "ORDER%0A";
-
-
-  for (
-    const code in currentCart
-  ) {
-
-
-    if (!products[code]) {
-      continue;
-    }
-
-
-    const quantity =
-      Number(
-        currentCart[code]
-      ) || 0;
-
-
-    if (quantity <= 0) {
-      continue;
-    }
-
-
-    message +=
-      encodeURIComponent(
-        products[code].name
-      ) +
-      " (" +
-      code +
-      ") × " +
-      quantity +
-      "%0A";
-
-  }
-
-
-
-  /* =========================
-     PRICE DETAILS
-  ========================== */
-
-  message +=
-    "%0AProducts: ₹" +
-    productsTotal.toFixed(2);
-
-
-  message +=
-    "%0AShipping: ₹" +
-    shippingPrice.toFixed(2);
-
-
-  message +=
-    "%0ATotal: ₹" +
-    grandTotal.toFixed(2);
-
-
-
-  /* =========================
-   FORMATTED DELIVERY ADDRESS
-========================= */
-
-message +=
-  "%0A%0ADELIVERY DETAILS%0A";
-
-message +=
-  "Name: " +
-  encodeURIComponent(fullName) +
-  "%0A";
-
-message +=
-  "Phone: " +
-  encodeURIComponent(phone) +
-  "%0A";
-
-const formattedAddress =
-  house +
-  ", " +
-  street +
-  ", " +
-  area +
-  ", " +
-  city +
-  ", " +
-  state +
-  " - " +
-  pin;
-
-message +=
-  "DELIVERY ADDRESS: " +
-  encodeURIComponent(formattedAddress);
-
-message +=
-  "%0A%0APlease confirm the order and payment details.";
-
-
-  /* =========================
-     OPEN WHATSAPP
-  ========================== */
-
-  document
-    .getElementById(
-      "success"
-    )
-    .style.display =
-    "block";
-
-
-  window.location.href =
-    "https://wa.me/918500670741?text=" +
-    message;
-
 }
 
+// Final Submission
+function submitToWhatsApp() {
+  // Collect Address Data
+  const fullName = document.getElementById("fullName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const house = document.getElementById("house").value.trim();
+  const street = document.getElementById("street").value.trim();
+  const area = document.getElementById("area").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const state = document.getElementById("state").value.trim();
+  const pin = document.getElementById("pin").value.trim();
 
+  const productsTotal = calculateProductsTotal();
+  const grandTotal = productsTotal + shippingPrice;
+
+  // Build Text
+  let lines = ["Hi WALLFORM! I'd like to place an order:", "", "ORDER DETAILS:"];
+
+  for (const code in currentCart) {
+    if (!products[code]) continue;
+    const quantity = Number(currentCart[code]) || 0;
+    if (quantity <= 0) continue;
+    lines.push(`• ${products[code].name} (${code}) × ${quantity}`);
+  }
+
+  // Name Plate Details
+  if (hasNameplate) {
+    const npName = document.getElementById("npName").value.trim();
+    const npReqs = document.getElementById("npRequests").value.trim();
+    lines.push("");
+    lines.push("📝 CUSTOM NAME PLATE (WF-008):");
+    lines.push(`• Print Name: ${npName}`);
+    if (npReqs) lines.push(`• Requests: ${npReqs}`);
+  }
+
+  // Custom Print Details
+  if (hasCustomPrint) {
+    const cpNotes = document.getElementById("cpNotes").value.trim();
+    lines.push("");
+    lines.push("🛠️ CUSTOM 3D PRINT (WF-009):");
+    lines.push("• File: Attaching .STL/.3MF here in chat");
+    if (cpNotes) lines.push(`• Notes: ${cpNotes}`);
+  }
+
+  lines.push("");
+  lines.push(`Products: ₹${productsTotal.toFixed(2)}`);
+  lines.push(`Shipping: ₹${shippingPrice.toFixed(2)}`);
+  lines.push(`Grand Total: ₹${grandTotal.toFixed(2)}`);
+
+  lines.push("");
+  lines.push("DELIVERY DETAILS:");
+  lines.push(`Name: ${fullName}`);
+  lines.push(`Phone: ${phone}`);
+  
+  let addr = house + ", " + street;
+  if (area) addr += ", " + area;
+  addr += ", " + city + ", " + state + " - " + pin;
+  
+  lines.push(`Address: ${addr}`);
+  lines.push("");
+  lines.push("Please confirm my order.");
+
+  const encodedMessage = encodeURIComponent(lines.join("\n"));
+  document.getElementById("success-msg").style.display = "block";
+  window.location.href = "https://wa.me/918500670741?text=" + encodedMessage;
+}
 </script>
-
-
 </body>
-
 </html>
