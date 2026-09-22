@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Custom Prints — WALLFORM</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #999;
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      border: 1px solid #333;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .instructions {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .instructions strong {
+      color: #fff;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 140px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      background: #fff;
+      color: #000;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .error {
+      color: #ff6b6b;
+      margin-top: 15px;
+      display: none;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+  <h1>CUSTOM PRINTS</h1>
+
+
+  <div class="subtitle">
+    Send us your own STL or 3MF file and we'll print it for you.
+  </div>
+
+
+  <div class="section">
+
+
+    <h2>HOW IT WORKS</h2>
+
+
+    <div class="instructions">
+
+      <strong>1.</strong>
+      Enter any instructions or requests below.
+
+      <br><br>
+
+      <strong>2.</strong>
+      Click CONTINUE.
+
+      <br><br>
+
+      <strong>3.</strong>
+      WhatsApp will open with your order.
+
+      <br><br>
+
+      <strong>4.</strong>
+      Attach your
+      <strong>.STL</strong>
+      or
+      <strong>.3MF</strong>
+      file directly in the WhatsApp chat.
+
+      <br><br>
+
+      <strong>5.</strong>
+      We'll check the file and confirm the print details and payment.
+
+    </div>
+
+
+    <label for="requests">
+      PRINT INSTRUCTIONS / REQUESTS
+    </label>
+
+
+    <textarea
+      id="requests"
+      placeholder="Colour, quantity, size, scaling, infill, modifications, or any other requests..."
+    ></textarea>
+
+
+    <button onclick="continueCustomPrint()">
+      CONTINUE
+    </button>
+
+
+    <div
+      id="error"
+      class="error"
+    ></div>
+
+
+  </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   GET CART
+========================= */
+
+function getCart() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "wallformCart"
+      );
+
+
+    if (!saved) {
+      return {};
+    }
+
+
+    const cart =
+      JSON.parse(saved);
+
+
+    if (
+      cart &&
+      typeof cart === "object"
+    ) {
+
+      return cart;
+
+    }
+
+
+    return {};
+
+  } catch (error) {
+
+    return {};
+
+  }
+
+}
+
+
+const cart =
+  getCart();
+
+
+
+/*
+  This page should only be
+  used when WF-009 exists.
+*/
+
+if (!cart["WF-009"]) {
+
+  window.location.href =
+    "checkout.html";
+
+}
+
+
+
+/* =========================
+   CONTINUE
+========================= */
+
+function continueCustomPrint() {
+
+
+  const requests =
+    document
+      .getElementById(
+        "requests"
+      )
+      .value
+      .trim();
+
+
+  const error =
+    document.getElementById(
+      "error"
+    );
+
+
+  error.style.display =
+    "none";
+
+
+
+  /* =========================
+     GET EXISTING CUSTOM DATA
+  ========================== */
+
+  let customData = {};
+
+
+  try {
+
+    customData =
+      JSON.parse(
+        localStorage.getItem(
+          "wallformCustomData"
+        ) || "{}"
+      );
+
+  } catch (error) {
+
+    customData = {};
+
+  }
+
+
+
+  /* =========================
+     SAVE CUSTOM PRINT DATA
+  ========================== */
+
+  customData.customPrint = {
+
+    requests: requests
+
+  };
+
+
+  localStorage.setItem(
+    "wallformCustomData",
+    JSON.stringify(customData)
+  );
+
+
+
+  /* =========================
+     OPEN WHATSAPP
+  ========================== */
+
+  openWhatsAppOrder();
+
+}
+
+
+
+/* =========================
+   WHATSAPP ORDER
+========================= */
+
+function openWhatsAppOrder() {
+
+
+  const checkoutData =
+    JSON.parse(
+      localStorage.getItem(
+        "wallformCheckoutData"
+      ) || "{}"
+    );
+
+
+  const customData =
+    JSON.parse(
+      localStorage.getItem(
+        "wallformCustomData"
+      ) || "{}"
+    );
+
+
+  const currentCart =
+    getCart();
+
+
+
+  /* =========================
+     PRODUCT MAP
+  ========================== */
+
+  const products = {
+
+    "WF-002": {
+      name: "Porsche 911 GT3RS Mini",
+      price: 99
+    },
+
+    "WF-003": {
+      name: "F1 Car Mini",
+      price: 99
+    },
+
+    "WF-004": {
+      name: "Japanese Scenery Mini",
+      price: 99
+    },
+
+    "WF-005": {
+      name: "Vintage Race Car Mini",
+      price: 99
+    },
+
+    "WF-006": {
+      name: "Batmobile Mini",
+      price: 99
+    },
+
+    "WF-007": {
+      name: "Check Engine Logo",
+      price: 119
+    },
+
+    "WF-008": {
+      name: "Custom Name Plate",
+      price: 149
+    },
+
+    "WF-009": {
+      name: "Custom Prints",
+      price: 220
+    }
+
+  };
+
+
+
+  const productsTotal =
+    Number(
+      checkoutData.productsTotal
+    ) || 0;
+
+
+  const shipping =
+    Number(
+      checkoutData.shippingPrice
+    ) || 0;
+
+
+  const grandTotal =
+    Number(
+      checkoutData.grandTotal
+    ) || 0;
+
+
+
+  /* =========================
+     START MESSAGE
+  ========================== */
+
+  let message =
+    "🖤 WALLFORM ORDER\n\n";
+
+
+  message +=
+    "━━━━━━━━━━━━━━━━━━\n" +
+    "CUSTOMER DETAILS\n" +
+    "━━━━━━━━━━━━━━━━━━\n";
+
+
+  message +=
+    "Name: " +
+    checkoutData.fullName +
+    "\n";
+
+
+  message +=
+    "Phone: " +
+    checkoutData.phone +
+    "\n";
+
+
+  message +=
+    "Address: " +
+    checkoutData.house +
+    ", " +
+    checkoutData.street +
+    ", " +
+    checkoutData.area +
+    ", " +
+    checkoutData.city +
+    ", " +
+    checkoutData.state +
+    " - " +
+    checkoutData.pin +
+    "\n\n";
+
+
+
+  /* =========================
+     ORDER
+  ========================== */
+
+  message +=
+    "━━━━━━━━━━━━━━━━━━\n" +
+    "ORDER\n" +
+    "━━━━━━━━━━━━━━━━━━\n";
+
+
+  for (
+    const code in currentCart
+  ) {
+
+    if (!products[code]) {
+      continue;
+    }
+
+
+    const quantity =
+      Number(
+        currentCart[code]
+      ) || 0;
+
+
+    if (quantity <= 0) {
+      continue;
+    }
+
+
+    message +=
+      quantity +
+      " × " +
+      products[code].name +
+      " (" +
+      code +
+      ") — ₹" +
+      (
+        products[code].price *
+        quantity
+      ).toFixed(2) +
+      "\n";
+
+  }
+
+
+
+  /* =========================
+     TOTAL
+  ========================== */
+
+  message +=
+    "\nProducts Total: ₹" +
+    productsTotal.toFixed(2) +
+    "\n";
+
+
+  message +=
+    "Shipping: ₹" +
+    shipping.toFixed(2) +
+    "\n";
+
+
+  message +=
+    "TOTAL: ₹" +
+    grandTotal.toFixed(2) +
+    "\n\n";
+
+
+
+  /* =========================
+     CUSTOM ORDER DETAILS
+  ========================== */
+
+  const hasNamePlate =
+    !!currentCart["WF-008"];
+
+
+  const hasCustomPrint =
+    !!currentCart["WF-009"];
+
+
+
+  /*
+    BOTH CUSTOM PRODUCTS
+  */
+
+  if (
+    hasNamePlate &&
+    hasCustomPrint
+  ) {
+
+
+    message +=
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "CUSTOM ORDER DETAILS\n" +
+      "━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    message +=
+      "CUSTOM NAME PLATE\n";
+
+
+    message +=
+      "Name / Text: " +
+      (
+        customData.namePlate?.name ||
+        ""
+      ) +
+      "\n";
+
+
+    message +=
+      "Requests / Modifications: " +
+      (
+        customData.namePlate?.requests ||
+        "None"
+      ) +
+      "\n\n";
+
+
+    message +=
+      "CUSTOM PRINTS\n";
+
+
+    message +=
+      "Requests / Modifications: " +
+      (
+        customData.customPrint?.requests ||
+        "None"
+      ) +
+      "\n";
+
+
+    message +=
+      "File: Customer will send the STL/3MF file through WhatsApp.\n\n";
+
+  }
+
+
+  /*
+    ONLY CUSTOM PRINTS
+  */
+
+  else if (
+    hasCustomPrint
+  ) {
+
+
+    message +=
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "CUSTOM PRINTS\n" +
+      "━━━━━━━━━━━━━━━━━━\n";
+
+
+    message +=
+      "Requests / Modifications: " +
+      (
+        customData.customPrint?.requests ||
+        "None"
+      ) +
+      "\n";
+
+
+    message +=
+      "File: Customer will send the STL/3MF file through WhatsApp.\n\n";
+
+  }
+
+
+
+  message +=
+    "Please confirm the order and payment details.";
+
+
+
+  /* =========================
+     OPEN WHATSAPP
+  ========================== */
+
+  window.location.href =
+    "https://wa.me/918500670741?text=" +
+    encodeURIComponent(message);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
