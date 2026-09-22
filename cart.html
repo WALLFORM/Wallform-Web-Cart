@@ -428,34 +428,44 @@
 
 const products = {
 
-  "WF-001": {
-    name: "Porsche 911 GT3 RS",
-    price: 69
-  },
-
   "WF-002": {
-    name: "F1 Car",
-    price: 89
+    name: "Porsche 911 GT3RS Mini",
+    price: 99
   },
 
   "WF-003": {
-    name: "Japanese Scenery",
-    price: 89
+    name: "F1 Car Mini",
+    price: 99
   },
 
   "WF-004": {
-    name: "Vintage Race Car",
-    price: 79
+    name: "Japanese Scenery Mini",
+    price: 99
   },
 
   "WF-005": {
-    name: "Batmobile",
-    price: 89
+    name: "Vintage Race Car Mini",
+    price: 99
   },
 
   "WF-006": {
+    name: "Batmobile Mini",
+    price: 99
+  },
+
+  "WF-007": {
     name: "Check Engine Logo",
+    price: 119
+  },
+
+  "WF-008": {
+    name: "Custom Name Plate",
     price: 149
+  },
+
+  "WF-009": {
+    name: "Custom Prints",
+    price: 220
   }
 
 };
@@ -473,16 +483,20 @@ function getCart() {
     const saved =
       localStorage.getItem("wallformCart");
 
+
     if (!saved) {
       return {};
     }
 
+
     const parsed =
       JSON.parse(saved);
+
 
     if (Array.isArray(parsed)) {
 
       const converted = {};
+
 
       parsed.forEach(code => {
 
@@ -490,6 +504,7 @@ function getCart() {
           (converted[code] || 0) + 1;
 
       });
+
 
       return converted;
 
@@ -551,7 +566,9 @@ function removeCart() {
    CART
 ========================= */
 
-let cart = getCart();
+let cart =
+  getCart();
+
 
 const cartElement =
   document.getElementById("cart");
@@ -563,6 +580,7 @@ const cartElement =
 ========================= */
 
 function renderCart() {
+
 
   const cartCodes =
     Object.keys(cart).filter(code => {
@@ -578,9 +596,11 @@ function renderCart() {
 
   /* =========================
      EMPTY
-  ========================= */
+  ========================== */
 
-  if (cartCodes.length === 0) {
+  if (
+    cartCodes.length === 0
+  ) {
 
     cartElement.innerHTML = `
 
@@ -592,7 +612,8 @@ function renderCart() {
       <button
         type="button"
         class="secondary"
-        onclick="closeCart()">
+        onclick="closeCart()"
+      >
 
         CONTINUE SHOPPING
 
@@ -614,22 +635,26 @@ function renderCart() {
 
   /* =========================
      ITEMS
-  ========================= */
+  ========================== */
 
   cartCodes.forEach(code => {
 
+
     const product =
       products[code];
+
 
     const quantity =
       Number(cart[code]);
 
 
     const itemTotal =
-      product.price * quantity;
+      product.price *
+      quantity;
 
 
-    total += itemTotal;
+    total +=
+      itemTotal;
 
 
     html += `
@@ -639,13 +664,16 @@ function renderCart() {
 
         <div class="item-info">
 
+
           <div class="item-name">
             ${product.name}
           </div>
 
+
           <div class="item-code">
             ${code}
           </div>
+
 
         </div>
 
@@ -660,7 +688,8 @@ function renderCart() {
             <button
               type="button"
               class="quantity-button"
-              onclick="changeQuantity('${code}', -1)">
+              onclick="changeQuantity('${code}', -1)"
+            >
 
               −
 
@@ -677,7 +706,8 @@ function renderCart() {
             <button
               type="button"
               class="quantity-button"
-              onclick="changeQuantity('${code}', 1)">
+              onclick="changeQuantity('${code}', 1)"
+            >
 
               +
 
@@ -708,7 +738,7 @@ function renderCart() {
 
   /* =========================
      TOTAL + BUTTONS
-  ========================= */
+  ========================== */
 
   html += `
 
@@ -729,7 +759,8 @@ function renderCart() {
     <button
       type="button"
       class="main-button"
-      onclick="goToCheckout()">
+      onclick="goToCheckout()"
+    >
 
       CHECK SHIPPING
 
@@ -740,7 +771,8 @@ function renderCart() {
     <button
       type="button"
       class="secondary"
-      onclick="closeCart()">
+      onclick="closeCart()"
+    >
 
       CONTINUE SHOPPING
 
@@ -751,7 +783,8 @@ function renderCart() {
     <button
       type="button"
       class="secondary clear"
-      onclick="clearCart()">
+      onclick="clearCart()"
+    >
 
       CLEAR CART
 
@@ -771,7 +804,11 @@ function renderCart() {
    QUANTITY
 ========================= */
 
-function changeQuantity(code, amount) {
+function changeQuantity(
+  code,
+  amount
+) {
+
 
   if (!products[code]) {
     return;
@@ -779,14 +816,18 @@ function changeQuantity(code, amount) {
 
 
   const current =
-    Number(cart[code] || 0);
+    Number(
+      cart[code] || 0
+    );
 
 
   const newQuantity =
     current + amount;
 
 
-  if (newQuantity <= 0) {
+  if (
+    newQuantity <= 0
+  ) {
 
     delete cart[code];
 
