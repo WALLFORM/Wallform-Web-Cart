@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Custom Name Plate — WALLFORM</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #999;
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      border: 1px solid #333;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      background: #fff;
+      color: #000;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .error {
+      color: #ff6b6b;
+      margin-top: 15px;
+      display: none;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+  <h1>CUSTOM NAME PLATE</h1>
+
+
+  <div class="subtitle">
+    Any font, any name! Tell us exactly how you want your
+    custom name plate to look.
+  </div>
+
+
+  <div class="section">
+
+
+    <label for="name">
+      NAME / TEXT
+    </label>
+
+    <input
+      id="name"
+      type="text"
+      placeholder="Enter the name or text"
+      maxlength="100"
+    >
+
+
+    <label for="requests">
+      CUSTOMIZATION / MODIFICATION REQUESTS
+    </label>
+
+    <textarea
+      id="requests"
+      placeholder="Font, style, symbols, layout, size changes, or any other requests..."
+    ></textarea>
+
+
+    <button onclick="continueNamePlate()">
+      CONTINUE
+    </button>
+
+
+    <div
+      id="error"
+      class="error"
+    ></div>
+
+
+  </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   CHECK CART
+========================= */
+
+function getCart() {
+
+  try {
+
+    const saved =
+      localStorage.getItem("wallformCart");
+
+    if (!saved) {
+      return {};
+    }
+
+    const cart =
+      JSON.parse(saved);
+
+    if (
+      cart &&
+      typeof cart === "object"
+    ) {
+      return cart;
+    }
+
+    return {};
+
+  } catch (error) {
+
+    return {};
+
+  }
+
+}
+
+
+const cart =
+  getCart();
+
+
+/*
+  This page should only exist
+  when WF-008 is in the cart.
+*/
+
+if (!cart["WF-008"]) {
+
+  window.location.href =
+    "checkout.html";
+
+}
+
+
+
+/* =========================
+   CONTINUE
+========================= */
+
+function continueNamePlate() {
+
+
+  const name =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+
+  const requests =
+    document
+      .getElementById("requests")
+      .value
+      .trim();
+
+
+  const error =
+    document.getElementById(
+      "error"
+    );
+
+
+  error.style.display =
+    "none";
+
+
+  /* =========================
+     VALIDATE NAME
+  ========================== */
+
+  if (!name) {
+
+    error.textContent =
+      "Please enter the name or text for your name plate.";
+
+    error.style.display =
+      "block";
+
+    return;
+
+  }
+
+
+
+  /* =========================
+     GET EXISTING CUSTOM DATA
+  ========================== */
+
+  let customData = {};
+
+  try {
+
+    customData =
+      JSON.parse(
+        localStorage.getItem(
+          "wallformCustomData"
+        ) || "{}"
+      );
+
+  } catch (error) {
+
+    customData = {};
+
+  }
+
+
+
+  /* =========================
+     SAVE NAME PLATE DATA
+  ========================== */
+
+  customData.namePlate = {
+
+    name: name,
+
+    requests: requests
+
+  };
+
+
+  localStorage.setItem(
+    "wallformCustomData",
+    JSON.stringify(customData)
+  );
+
+
+
+  /* =========================
+     CHECK FOR CUSTOM PRINTS
+  ========================== */
+
+  if (cart["WF-009"]) {
+
+    /*
+      Both custom products are
+      present, so continue to
+      Custom Prints instructions.
+    */
+
+    window.location.href =
+      "custom-print.html";
+
+    return;
+
+  }
+
+
+
+  /* =========================
+     ONLY NAME PLATE
+  ========================== */
+
+  openWhatsAppOrder();
+
+}
+
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function openWhatsAppOrder() {
+
+
+  const checkoutData =
+    JSON.parse(
+      localStorage.getItem(
+        "wallformCheckoutData"
+      ) || "{}"
+    );
+
+
+  const customData =
+    JSON.parse(
+      localStorage.getItem(
+        "wallformCustomData"
+      ) || "{}"
+    );
+
+
+  const currentCart =
+    getCart();
+
+
+
+  /* =========================
+     PRODUCT MAP
+  ========================== */
+
+  const products = {
+
+    "WF-002": {
+      name: "Porsche 911 GT3RS Mini",
+      price: 99
+    },
+
+    "WF-003": {
+      name: "F1 Car Mini",
+      price: 99
+    },
+
+    "WF-004": {
+      name: "Japanese Scenery Mini",
+      price: 99
+    },
+
+    "WF-005": {
+      name: "Vintage Race Car Mini",
+      price: 99
+    },
+
+    "WF-006": {
+      name: "Batmobile Mini",
+      price: 99
+    },
+
+    "WF-007": {
+      name: "Check Engine Logo",
+      price: 119
+    },
+
+    "WF-008": {
+      name: "Custom Name Plate",
+      price: 149
+    },
+
+    "WF-009": {
+      name: "Custom Prints",
+      price: 220
+    }
+
+  };
+
+
+
+  const productsTotal =
+    Number(
+      checkoutData.productsTotal
+    ) || 0;
+
+
+  const shipping =
+    Number(
+      checkoutData.shippingPrice
+    ) || 0;
+
+
+  const grandTotal =
+    Number(
+      checkoutData.grandTotal
+    ) || 0;
+
+
+
+  /* =========================
+     MESSAGE
+  ========================== */
+
+  let message =
+    "🖤 WALLFORM ORDER\n\n";
+
+
+  message +=
+    "━━━━━━━━━━━━━━━━━━\n" +
+    "CUSTOMER DETAILS\n" +
+    "━━━━━━━━━━━━━━━━━━\n";
+
+
+  message +=
+    "Name: " +
+    checkoutData.fullName +
+    "\n";
+
+
+  message +=
+    "Phone: " +
+    checkoutData.phone +
+    "\n";
+
+
+  message +=
+    "Address: " +
+    checkoutData.house +
+    ", " +
+    checkoutData.street +
+    ", " +
+    checkoutData.area +
+    ", " +
+    checkoutData.city +
+    ", " +
+    checkoutData.state +
+    " - " +
+    checkoutData.pin +
+    "\n\n";
+
+
+  /* =========================
+     ORDER
+  ========================== */
+
+  message +=
+    "━━━━━━━━━━━━━━━━━━\n" +
+    "ORDER\n" +
+    "━━━━━━━━━━━━━━━━━━\n";
+
+
+  for (
+    const code in currentCart
+  ) {
+
+    if (!products[code]) {
+      continue;
+    }
+
+
+    const quantity =
+      Number(
+        currentCart[code]
+      ) || 0;
+
+
+    if (quantity <= 0) {
+      continue;
+    }
+
+
+    message +=
+      quantity +
+      " × " +
+      products[code].name +
+      " (" +
+      code +
+      ") — ₹" +
+      (
+        products[code].price *
+        quantity
+      ).toFixed(2) +
+      "\n";
+
+  }
+
+
+
+  /* =========================
+     TOTAL
+  ========================== */
+
+  message +=
+    "\nProducts Total: ₹" +
+    productsTotal.toFixed(2) +
+    "\n";
+
+
+  message +=
+    "Shipping: ₹" +
+    shipping.toFixed(2) +
+    "\n";
+
+
+  message +=
+    "TOTAL: ₹" +
+    grandTotal.toFixed(2) +
+    "\n\n";
+
+
+
+  /* =========================
+     CUSTOM NAME PLATE
+  ========================== */
+
+  message +=
+    "━━━━━━━━━━━━━━━━━━\n" +
+    "CUSTOM NAME PLATE\n" +
+    "━━━━━━━━━━━━━━━━━━\n";
+
+
+  message +=
+    "Name / Text: " +
+    customData.namePlate.name +
+    "\n";
+
+
+  message +=
+    "Requests / Modifications: " +
+    (
+      customData.namePlate.requests ||
+      "None"
+    ) +
+    "\n\n";
+
+
+  message +=
+    "Please confirm the order and payment details.";
+
+
+
+  /* =========================
+     OPEN WHATSAPP
+  ========================== */
+
+  window.location.href =
+    "https://wa.me/918500670741?text=" +
+    encodeURIComponent(message);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
