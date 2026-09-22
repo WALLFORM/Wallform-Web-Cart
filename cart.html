@@ -141,7 +141,7 @@
 
     /* =========================
        QUANTITY
-    ========================= */
+    ========================== */
 
     .quantity-control {
 
@@ -234,7 +234,7 @@
 
     /* =========================
        TOTAL
-    ========================= */
+    ========================== */
 
     .total {
 
@@ -253,7 +253,7 @@
 
     /* =========================
        BUTTONS
-    ========================= */
+    ========================== */
 
     button.main-button,
     button.secondary {
@@ -342,7 +342,7 @@
 
     /* =========================
        MOBILE
-    ========================= */
+    ========================== */
 
     @media (max-width: 550px) {
 
@@ -737,6 +737,22 @@ function renderCart() {
 
 
   /* =========================
+     CUSTOM CHECK
+  ========================== */
+
+  const hasCustomProduct =
+    !!cart["WF-008"] ||
+    !!cart["WF-009"];
+
+
+  const mainButtonText =
+    hasCustomProduct
+      ? "CUSTOMIZE"
+      : "CHECK SHIPPING";
+
+
+
+  /* =========================
      TOTAL + BUTTONS
   ========================== */
 
@@ -762,7 +778,7 @@ function renderCart() {
       onclick="goToCheckout()"
     >
 
-      CHECK SHIPPING
+      ${mainButtonText}
 
     </button>
 
@@ -848,10 +864,52 @@ function changeQuantity(
 
 
 /* =========================
-   SHIPPING CHECKER
+   CHECKOUT / CUSTOMIZE
 ========================= */
 
 function goToCheckout() {
+
+
+  /*
+    CUSTOM NAME PLATE
+    Always customize first.
+  */
+
+  if (
+    Number(cart["WF-008"]) > 0
+  ) {
+
+    window.location.href =
+      "nameplate.html";
+
+    return;
+
+  }
+
+
+
+  /*
+    CUSTOM PRINT
+    Customize first.
+  */
+
+  if (
+    Number(cart["WF-009"]) > 0
+  ) {
+
+    window.location.href =
+      "custom-print.html";
+
+    return;
+
+  }
+
+
+
+  /*
+    NORMAL PRODUCTS
+    Go directly to shipping.
+  */
 
   window.location.href =
     "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
