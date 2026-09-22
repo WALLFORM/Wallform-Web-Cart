@@ -48,6 +48,22 @@
       margin-bottom: 20px;
     }
 
+    .section h2 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .instructions {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .instructions strong {
+      color: #fff;
+    }
+
     label {
       display: block;
       font-size: 12px;
@@ -90,10 +106,25 @@
       cursor: pointer;
     }
 
+    .back-button {
+      background: #111;
+      color: #fff;
+      border: 1px solid #444;
+      margin-top: 10px;
+    }
+
     .error {
       color: #ff6b6b;
       margin-top: 15px;
       display: none;
+    }
+
+    #customizationSection {
+      display: none;
+    }
+
+    .name-field {
+      margin-bottom: 5px;
     }
 
   </style>
@@ -111,46 +142,116 @@
 
 
   <div class="subtitle">
-    Any font, any name! Tell us exactly how you want your
-    custom name plate to look.
+    Any font, any name! Create your custom name plate exactly
+    the way you want it.
   </div>
 
 
-  <div class="section">
+
+  <!-- =========================
+       STEP 1 — NAMES
+  ========================== -->
+
+  <div
+    class="section"
+    id="namesSection"
+  >
+
+    <h2>STEP 1 — ENTER THE NAMES</h2>
 
 
-    <label for="name">
-      NAME / TEXT
-    </label>
+    <div class="instructions">
 
-    <input
-      id="name"
-      type="text"
-      placeholder="Enter the name or text"
-      maxlength="100"
-    >
+      You have ordered
+      <strong id="quantityText"></strong>
+      custom name plate(s).
+
+      <br><br>
+
+      Please enter the name or text for each name plate.
+
+    </div>
+
+
+    <div id="nameFields"></div>
+
+
+    <button onclick="continueToCustomization()">
+      CONTINUE
+    </button>
+
+
+    <div
+      id="nameError"
+      class="error"
+    ></div>
+
+  </div>
+
+
+
+  <!-- =========================
+       STEP 2 — CUSTOMIZATION
+  ========================== -->
+
+  <div
+    class="section"
+    id="customizationSection"
+  >
+
+    <h2>STEP 2 — CUSTOMIZATION</h2>
+
+
+    <div class="instructions">
+
+      <strong>Standard maximum length:</strong>
+      280 mm.
+
+      <br><br>
+
+      If the name is longer, the letters will be made smaller
+      so the complete name fits within the maximum length.
+
+      <br><br>
+
+      You can also request a different size if you need one.
+
+      <br><br>
+
+      Tell us about the font, style, symbols, layout, size,
+      or any other changes you would like.
+
+    </div>
 
 
     <label for="requests">
       CUSTOMIZATION / MODIFICATION REQUESTS
     </label>
 
+
     <textarea
       id="requests"
-      placeholder="Font, style, symbols, layout, size changes, or any other requests..."
+      placeholder="Font, style, symbols, layout, size changes, colours, or any other requests..."
     ></textarea>
 
 
-    <button onclick="continueNamePlate()">
+    <button onclick="continueFromCustomization()">
       CONTINUE
     </button>
 
 
+    <button
+      class="back-button"
+      onclick="goBackToNames()"
+    >
+      BACK
+    </button>
+
+
     <div
-      id="error"
+      id="customError"
       class="error"
     ></div>
-
 
   </div>
 
@@ -163,7 +264,7 @@
 
 
 /* =========================
-   CHECK CART
+   GET CART
 ========================= */
 
 function getCart() {
@@ -171,21 +272,29 @@ function getCart() {
   try {
 
     const saved =
-      localStorage.getItem("wallformCart");
+      localStorage.getItem(
+        "wallformCart"
+      );
+
 
     if (!saved) {
       return {};
     }
 
+
     const cart =
       JSON.parse(saved);
+
 
     if (
       cart &&
       typeof cart === "object"
     ) {
+
       return cart;
+
     }
+
 
     return {};
 
@@ -202,12 +311,16 @@ const cart =
   getCart();
 
 
-/*
-  This page should only exist
-  when WF-008 is in the cart.
-*/
 
-if (!cart["WF-008"]) {
+/* =========================
+   CHECK NAME PLATE
+========================= */
+
+const quantity =
+  Number(cart["WF-008"]) || 0;
+
+
+if (quantity <= 0) {
 
   window.location.href =
     "checkout.html";
@@ -217,29 +330,89 @@ if (!cart["WF-008"]) {
 
 
 /* =========================
-   CONTINUE
+   CREATE NAME FIELDS
 ========================= */
 
-function continueNamePlate() {
+document.getElementById(
+  "quantityText"
+).textContent =
+  quantity +
+  (
+    quantity === 1
+      ? " name plate"
+      : " name plates"
+  );
 
 
-  const name =
-    document
-      .getElementById("name")
-      .value
-      .trim();
+const nameFields =
+  document.getElementById(
+    "nameFields"
+  );
 
 
-  const requests =
-    document
-      .getElementById("requests")
-      .value
-      .trim();
+for (
+  let i = 1;
+  i <= quantity;
+  i++
+) {
 
+  const label =
+    document.createElement(
+      "label"
+    );
+
+  label.textContent =
+    quantity === 1
+      ? "NAME / TEXT"
+      : "NAME / TEXT " + i;
+
+
+  const input =
+    document.createElement(
+      "input"
+    );
+
+  input.type =
+    "text";
+
+  input.className =
+    "name-field";
+
+  input.id =
+    "name" + i;
+
+  input.maxLength =
+    100;
+
+  input.placeholder =
+    quantity === 1
+      ? "Enter the name or text"
+      : "Enter name or text for name plate " + i;
+
+
+  nameFields.appendChild(
+    label
+  );
+
+  nameFields.appendChild(
+    input
+  );
+
+}
+
+
+
+/* =========================
+   CONTINUE TO CUSTOMIZATION
+========================= */
+
+function continueToCustomization() {
+
+  const names = [];
 
   const error =
     document.getElementById(
-      "error"
+      "nameError"
     );
 
 
@@ -247,19 +420,42 @@ function continueNamePlate() {
     "none";
 
 
-  /* =========================
-     VALIDATE NAME
-  ========================== */
+  for (
+    let i = 1;
+    i <= quantity;
+    i++
+  ) {
 
-  if (!name) {
+    const input =
+      document.getElementById(
+        "name" + i
+      );
 
-    error.textContent =
-      "Please enter the name or text for your name plate.";
 
-    error.style.display =
-      "block";
+    const value =
+      input.value.trim();
 
-    return;
+
+    if (!value) {
+
+      error.textContent =
+        quantity === 1
+          ? "Please enter the name or text for your name plate."
+          : "Please enter the name or text for name plate " + i + ".";
+
+
+      error.style.display =
+        "block";
+
+
+      input.focus();
+
+      return;
+
+    }
+
+
+    names.push(value);
 
   }
 
@@ -270,6 +466,7 @@ function continueNamePlate() {
   ========================== */
 
   let customData = {};
+
 
   try {
 
@@ -289,16 +486,140 @@ function continueNamePlate() {
 
 
   /* =========================
-     SAVE NAME PLATE DATA
+     SAVE NAMES
   ========================== */
 
   customData.namePlate = {
 
-    name: name,
+    names: names,
 
-    requests: requests
+    requests:
+      customData.namePlate?.requests ||
+      ""
 
   };
+
+
+  localStorage.setItem(
+    "wallformCustomData",
+    JSON.stringify(customData)
+  );
+
+
+
+  /* =========================
+     SHOW STEP 2
+  ========================== */
+
+  document.getElementById(
+    "namesSection"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "customizationSection"
+  ).style.display =
+    "block";
+
+
+
+  window.scrollTo(
+    0,
+    0
+  );
+
+}
+
+
+
+/* =========================
+   BACK TO NAMES
+========================= */
+
+function goBackToNames() {
+
+  document.getElementById(
+    "customizationSection"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "namesSection"
+  ).style.display =
+    "block";
+
+
+  window.scrollTo(
+    0,
+    0
+  );
+
+}
+
+
+
+/* =========================
+   CONTINUE FROM CUSTOMIZATION
+========================= */
+
+function continueFromCustomization() {
+
+  const requests =
+    document
+      .getElementById(
+        "requests"
+      )
+      .value
+      .trim();
+
+
+  const error =
+    document.getElementById(
+      "customError"
+    );
+
+
+  error.style.display =
+    "none";
+
+
+
+  /* =========================
+     GET EXISTING CUSTOM DATA
+  ========================== */
+
+  let customData = {};
+
+
+  try {
+
+    customData =
+      JSON.parse(
+        localStorage.getItem(
+          "wallformCustomData"
+        ) || "{}"
+      );
+
+  } catch (error) {
+
+    customData = {};
+
+  }
+
+
+
+  /* =========================
+     SAVE CUSTOMIZATION
+  ========================== */
+
+  customData.namePlate =
+    customData.namePlate || {};
+
+
+  customData.namePlate.requests =
+    requests;
 
 
   localStorage.setItem(
@@ -313,12 +634,6 @@ function continueNamePlate() {
   ========================== */
 
   if (cart["WF-009"]) {
-
-    /*
-      Both custom products are
-      present, so continue to
-      Custom Prints instructions.
-    */
 
     window.location.href =
       "custom-print.html";
@@ -340,11 +655,10 @@ function continueNamePlate() {
 
 
 /* =========================
-   WHATSAPP
+   WHATSAPP ORDER
 ========================= */
 
 function openWhatsAppOrder() {
-
 
   const checkoutData =
     JSON.parse(
@@ -437,7 +751,7 @@ function openWhatsAppOrder() {
 
 
   /* =========================
-     MESSAGE
+     START MESSAGE
   ========================== */
 
   let message =
@@ -478,6 +792,7 @@ function openWhatsAppOrder() {
     "\n\n";
 
 
+
   /* =========================
      ORDER
   ========================== */
@@ -497,19 +812,19 @@ function openWhatsAppOrder() {
     }
 
 
-    const quantity =
+    const itemQuantity =
       Number(
         currentCart[code]
       ) || 0;
 
 
-    if (quantity <= 0) {
+    if (itemQuantity <= 0) {
       continue;
     }
 
 
     message +=
-      quantity +
+      itemQuantity +
       " × " +
       products[code].name +
       " (" +
@@ -517,7 +832,7 @@ function openWhatsAppOrder() {
       ") — ₹" +
       (
         products[code].price *
-        quantity
+        itemQuantity
       ).toFixed(2) +
       "\n";
 
@@ -558,16 +873,33 @@ function openWhatsAppOrder() {
     "━━━━━━━━━━━━━━━━━━\n";
 
 
+  const names =
+    customData.namePlate?.names ||
+    [];
+
+
+  names.forEach(
+    function(name, index) {
+
+      message +=
+        "Name " +
+        (index + 1) +
+        ": " +
+        name +
+        "\n";
+
+    }
+  );
+
+
   message +=
-    "Name / Text: " +
-    customData.namePlate.name +
     "\n";
 
 
   message +=
     "Requests / Modifications: " +
     (
-      customData.namePlate.requests ||
+      customData.namePlate?.requests ||
       "None"
     ) +
     "\n\n";
