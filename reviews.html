@@ -15,13 +15,13 @@
 
     body {
       margin: 0;
-      background: #fff;
-      color: #000;
+      background: #000;
+      color: #fff;
       font-family: Arial, Helvetica, sans-serif;
     }
 
     header {
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid #222;
       padding: 20px 24px;
       display: flex;
       align-items: center;
@@ -41,9 +41,9 @@
 
     .nav a {
       text-decoration: none;
-      color: #000;
-      border: 1px solid #000;
-      padding: 9px 14px;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 9px 15px;
       font-size: 12px;
       font-weight: 700;
     }
@@ -63,30 +63,24 @@
     }
 
     h1 {
-      font-size: 48px;
+      font-size: 52px;
       line-height: 1;
-      margin: 0 0 12px;
-      letter-spacing: -2.5px;
-    }
-
-    .sub {
-      color: #666;
-      font-size: 15px;
+      margin: 0;
+      letter-spacing: -3px;
     }
 
     .write-btn {
-      border: 0;
-      background: #000;
-      color: #fff;
-      padding: 15px 22px;
-      font-size: 13px;
+      border: 1px solid #fff;
+      background: #fff;
+      color: #000;
+      padding: 14px 21px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
-      white-space: nowrap;
     }
 
     .summary {
-      border: 1px solid #ddd;
+      border: 1px solid #222;
       padding: 25px;
       display: flex;
       align-items: center;
@@ -101,19 +95,19 @@
     }
 
     .stars {
-      letter-spacing: 2px;
-      font-size: 20px;
+      letter-spacing: 3px;
+      font-size: 19px;
     }
 
     .review-count {
       color: #777;
-      font-size: 13px;
+      font-size: 12px;
       margin-top: 5px;
     }
 
     .review-card {
-      border-bottom: 1px solid #ddd;
-      padding: 25px 0;
+      border-bottom: 1px solid #222;
+      padding: 27px 0;
     }
 
     .review-top {
@@ -129,37 +123,38 @@
     }
 
     .review-date {
-      color: #888;
+      color: #666;
       font-size: 12px;
     }
 
     .review-stars {
       font-size: 17px;
       letter-spacing: 2px;
-      margin-bottom: 9px;
+      margin-bottom: 11px;
     }
 
     .product {
       display: inline-block;
-      border: 1px solid #ddd;
+      border: 1px solid #333;
       padding: 5px 8px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       margin-bottom: 12px;
     }
 
     .review-text {
       font-size: 14px;
-      line-height: 1.6;
-      color: #333;
+      line-height: 1.65;
+      color: #bbb;
       max-width: 700px;
     }
 
     .empty {
       text-align: center;
       padding: 60px 20px;
-      border: 1px solid #ddd;
-      color: #777;
+      border: 1px solid #222;
+      color: #666;
+      font-size: 13px;
     }
 
     /* MODAL */
@@ -167,7 +162,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, .55);
+      background: rgba(0, 0, 0, .82);
       display: none;
       align-items: center;
       justify-content: center;
@@ -184,7 +179,8 @@
       max-width: 540px;
       max-height: 90vh;
       overflow-y: auto;
-      background: #fff;
+      background: #0a0a0a;
+      border: 1px solid #292929;
       padding: 30px;
     }
 
@@ -197,31 +193,35 @@
 
     .modal h2 {
       margin: 0;
-      font-size: 25px;
+      font-size: 24px;
       letter-spacing: -1px;
     }
 
     .close {
       border: 0;
       background: none;
-      font-size: 26px;
+      color: #fff;
+      font-size: 27px;
       cursor: pointer;
     }
 
     label {
       display: block;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 800;
       margin: 20px 0 8px;
       text-transform: uppercase;
+      color: #aaa;
+      letter-spacing: .5px;
     }
 
     select,
     input,
     textarea {
       width: 100%;
-      border: 1px solid #ccc;
-      background: #fff;
+      border: 1px solid #333;
+      background: #050505;
+      color: #fff;
       padding: 13px;
       font-family: inherit;
       font-size: 14px;
@@ -231,7 +231,7 @@
     select:focus,
     input:focus,
     textarea:focus {
-      border-color: #000;
+      border-color: #fff;
     }
 
     textarea {
@@ -250,32 +250,37 @@
       background: none;
       padding: 0;
       font-size: 38px;
-      color: #ccc;
+      color: #444;
       cursor: pointer;
       line-height: 1;
     }
 
     .star.selected {
-      color: #000;
+      color: #fff;
     }
 
     .submit {
       width: 100%;
       border: 0;
-      background: #000;
-      color: #fff;
+      background: #fff;
+      color: #000;
       padding: 15px;
       margin-top: 25px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
+    }
+
+    .submit:disabled {
+      opacity: .5;
+      cursor: wait;
     }
 
     .message {
       display: none;
       margin-top: 15px;
       padding: 12px;
-      font-size: 13px;
+      font-size: 12px;
       text-align: center;
     }
 
@@ -284,16 +289,17 @@
     }
 
     .success {
-      background: #eef8ee;
-      color: #176117;
+      background: #fff;
+      color: #000;
     }
 
     .error {
-      background: #fff0f0;
-      color: #8b0000;
+      border: 1px solid #333;
+      color: #fff;
     }
 
     @media (max-width: 650px) {
+
       header {
         padding: 17px;
       }
@@ -303,7 +309,7 @@
       }
 
       h1 {
-        font-size: 38px;
+        font-size: 40px;
       }
 
       .hero {
@@ -329,36 +335,63 @@
 <body>
 
 <header>
+
   <div class="logo">WALLFORM</div>
 
   <div class="nav">
-    <a href="https://wallform.my.canva.site/shop">SHOP</a>
+    <a href="https://wallform.my.canva.site/shop">
+      SHOP
+    </a>
   </div>
+
 </header>
+
 
 <main>
 
   <section class="hero">
-    <div>
-      <h1>REVIEWS</h1>
-      <div class="sub">Real experiences from WALLFORM customers.</div>
-    </div>
 
-    <button class="write-btn" onclick="openReview()">
+    <h1>REVIEWS</h1>
+
+    <button
+      class="write-btn"
+      onclick="openReview()"
+    >
       WRITE A REVIEW
     </button>
+
   </section>
+
 
   <section class="summary">
-    <div class="average" id="average">—</div>
+
+    <div
+      class="average"
+      id="average"
+    >
+      —
+    </div>
 
     <div>
-      <div class="stars" id="summaryStars">☆☆☆☆☆</div>
-      <div class="review-count" id="reviewCount">
+
+      <div
+        class="stars"
+        id="summaryStars"
+      >
+        ☆☆☆☆☆
+      </div>
+
+      <div
+        class="review-count"
+        id="reviewCount"
+      >
         No reviews yet
       </div>
+
     </div>
+
   </section>
+
 
   <section id="reviews"></section>
 
@@ -367,17 +400,26 @@
 
 <!-- REVIEW MODAL -->
 
-<div class="overlay" id="overlay">
+<div
+  class="overlay"
+  id="overlay"
+>
 
   <div class="modal">
 
     <div class="modal-head">
+
       <h2>WRITE A REVIEW</h2>
 
-      <button class="close" onclick="closeReview()">
+      <button
+        class="close"
+        onclick="closeReview()"
+      >
         ×
       </button>
+
     </div>
+
 
     <form id="reviewForm">
 
@@ -385,8 +427,14 @@
         Product
       </label>
 
-      <select id="product" required>
-        <option value="">Choose a product</option>
+      <select
+        id="product"
+        required
+      >
+
+        <option value="">
+          Choose a product
+        </option>
 
         <option value="WF-002|Porsche 911 GT3RS Mini">
           Porsche 911 GT3RS Mini
@@ -419,6 +467,7 @@
         <option value="WF-009|Custom Prints">
           Custom Prints
         </option>
+
       </select>
 
 
@@ -428,11 +477,35 @@
 
       <div class="star-picker">
 
-        <button type="button" class="star" data-rating="1">☆</button>
-        <button type="button" class="star" data-rating="2">☆</button>
-        <button type="button" class="star" data-rating="3">☆</button>
-        <button type="button" class="star" data-rating="4">☆</button>
-        <button type="button" class="star" data-rating="5">☆</button>
+        <button
+          type="button"
+          class="star"
+          data-rating="1"
+        >☆</button>
+
+        <button
+          type="button"
+          class="star"
+          data-rating="2"
+        >☆</button>
+
+        <button
+          type="button"
+          class="star"
+          data-rating="3"
+        >☆</button>
+
+        <button
+          type="button"
+          class="star"
+          data-rating="4"
+        >☆</button>
+
+        <button
+          type="button"
+          class="star"
+          data-rating="5"
+        >☆</button>
 
       </div>
 
@@ -444,13 +517,13 @@
       <input
         id="name"
         maxlength="40"
-        placeholder="Your name"
+        placeholder="Display name"
         required
       >
 
 
       <label for="reviewText">
-        Your review
+        Review
       </label>
 
       <textarea
@@ -461,11 +534,18 @@
       ></textarea>
 
 
-      <button class="submit" type="submit">
+      <button
+        class="submit"
+        type="submit"
+      >
         POST REVIEW
       </button>
 
-      <div class="message" id="message"></div>
+
+      <div
+        class="message"
+        id="message"
+      ></div>
 
     </form>
 
@@ -476,59 +556,70 @@
 
 <script>
 
-  /* ==============================
-     SUPABASE
-  ============================== */
+  const SUPABASE_URL =
+    "https://hfszmdfhornblrwxawmo.supabase.co";
 
-  const SUPABASE_URL = "https://hfszmdfhornblrwxawmo.supabase.co";
-
-  const SUPABASE_KEY = "sb_publishable_4Rs82e-VgvBAD4po3yyuJg_r6KFgoqJ";
-
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const SUPABASE_KEY =
+    "sb_publishable_4Rs82e-VgvBAD4po3yyuJg_r6KFgoqJ";
 
 
-  /* ==============================
-     REVIEW UI
-  ============================== */
+  const db =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
 
   let selectedRating = 0;
 
-  const overlay = document.getElementById("overlay");
 
-  const stars = document.querySelectorAll(".star");
+  const overlay =
+    document.getElementById("overlay");
+
+
+  const stars =
+    document.querySelectorAll(".star");
 
 
   function openReview() {
+
     overlay.classList.add("active");
+
   }
 
 
   function closeReview() {
+
     overlay.classList.remove("active");
+
   }
 
 
-  overlay.addEventListener("click", function(e) {
+  overlay.addEventListener(
+    "click",
+    function(e) {
 
-    if (e.target === overlay) {
-      closeReview();
+      if (e.target === overlay) {
+        closeReview();
+      }
+
     }
-
-  });
+  );
 
 
   stars.forEach(star => {
 
-    star.addEventListener("click", function() {
+    star.addEventListener(
+      "click",
+      function() {
 
-      selectedRating = Number(this.dataset.rating);
+        selectedRating =
+          Number(this.dataset.rating);
 
-      updateStars();
+        updateStars();
 
-    });
+      }
+    );
 
   });
 
@@ -537,16 +628,20 @@
 
     stars.forEach(star => {
 
-      const rating = Number(star.dataset.rating);
+      const rating =
+        Number(star.dataset.rating);
+
 
       if (rating <= selectedRating) {
 
         star.textContent = "★";
+
         star.classList.add("selected");
 
       } else {
 
         star.textContent = "☆";
+
         star.classList.remove("selected");
 
       }
@@ -556,20 +651,20 @@
   }
 
 
-  /* ==============================
-     LOAD REVIEWS
-  ============================== */
-
   async function loadReviews() {
 
-    const container = document.getElementById("reviews");
+    const container =
+      document.getElementById("reviews");
 
-    container.innerHTML = "";
 
-    const { data, error } = await db
-      .from("reviews")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const { data, error } =
+      await db
+        .from("reviews")
+        .select("*")
+        .order(
+          "created_at",
+          { ascending: false }
+        );
 
 
     if (error) {
@@ -581,223 +676,290 @@
       `;
 
       return;
+
     }
 
 
-    if (!data.length) {
+    if (!data || data.length === 0) {
+
+      document.getElementById("average")
+        .textContent = "—";
+
+      document.getElementById("summaryStars")
+        .textContent = "☆☆☆☆☆";
+
+      document.getElementById("reviewCount")
+        .textContent = "No reviews yet";
+
 
       container.innerHTML = `
         <div class="empty">
           No reviews yet.<br><br>
-          Be the first to review a WALLFORM product.
+          Be the first.
         </div>
       `;
 
-      updateSummary([]);
-
       return;
+
     }
 
 
     updateSummary(data);
 
 
-    container.innerHTML = data.map(review => {
+    container.innerHTML =
+      data.map(review => {
 
-      const date = new Date(
-        review.created_at
-      ).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
+        const date =
+          new Date(
+            review.created_at
+          ).toLocaleDateString(
+            "en-IN",
+            {
+              day: "numeric",
+              month: "short",
+              year: "numeric"
+            }
+          );
 
 
-      return `
-        <article class="review-card">
+        return `
 
-          <div class="review-top">
+          <article class="review-card">
 
-            <div class="reviewer">
-              ${escapeHTML(review.reviewer_name)}
+            <div class="review-top">
+
+              <div class="reviewer">
+                ${escapeHTML(
+                  review.reviewer_name
+                )}
+              </div>
+
+              <div class="review-date">
+                ${date}
+              </div>
+
             </div>
 
-            <div class="review-date">
-              ${date}
+
+            <div class="review-stars">
+              ${"★".repeat(review.rating)}
+              ${"☆".repeat(5 - review.rating)}
             </div>
 
-          </div>
+
+            <div class="product">
+              ${escapeHTML(
+                review.product_name
+              )}
+            </div>
 
 
-          <div class="review-stars">
-            ${"★".repeat(review.rating)}
-            ${"☆".repeat(5 - review.rating)}
-          </div>
+            <div class="review-text">
+              ${escapeHTML(
+                review.review_text
+              )}
+            </div>
 
+          </article>
 
-          <div class="product">
-            ${escapeHTML(review.product_name)}
-          </div>
+        `;
 
-
-          <div class="review-text">
-            ${escapeHTML(review.review_text)}
-          </div>
-
-        </article>
-      `;
-
-    }).join("");
+      }).join("");
 
   }
 
 
   function updateSummary(reviews) {
 
-    const count = reviews.length;
+    if (!reviews.length) {
+      return;
+    }
+
 
     const average =
       reviews.reduce(
-        (sum, review) => sum + review.rating,
+        (sum, review) =>
+          sum + Number(review.rating),
         0
-      ) / count;
+      ) / reviews.length;
 
 
-    document.getElementById("average").textContent =
-      average.toFixed(1);
+    const rounded =
+      Math.round(average);
 
 
-    document.getElementById("summaryStars").textContent =
-      "★".repeat(Math.round(average)) +
-      "☆".repeat(5 - Math.round(average));
+    document.getElementById("average")
+      .textContent =
+        average.toFixed(1);
 
 
-    document.getElementById("reviewCount").textContent =
-      count === 1
-        ? "1 review"
-        : `${count} reviews`;
+    document.getElementById("summaryStars")
+      .textContent =
+        "★".repeat(rounded) +
+        "☆".repeat(5 - rounded);
+
+
+    document.getElementById("reviewCount")
+      .textContent =
+        reviews.length === 1
+          ? "1 review"
+          : `${reviews.length} reviews`;
 
   }
 
 
-  /* ==============================
-     SUBMIT REVIEW
-  ============================== */
-
   document
     .getElementById("reviewForm")
-    .addEventListener("submit", async function(e) {
+    .addEventListener(
+      "submit",
+      async function(e) {
 
-      e.preventDefault();
-
-
-      const message =
-        document.getElementById("message");
+        e.preventDefault();
 
 
-      if (!selectedRating) {
+        if (!selectedRating) {
+
+          showMessage(
+            "Please select a rating.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        const productValue =
+          document.getElementById(
+            "product"
+          ).value;
+
+
+        if (!productValue) {
+
+          showMessage(
+            "Please choose a product.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        const [
+          productCode,
+          productName
+        ] =
+          productValue.split("|");
+
+
+        const reviewerName =
+          document.getElementById(
+            "name"
+          ).value.trim();
+
+
+        const reviewText =
+          document.getElementById(
+            "reviewText"
+          ).value.trim();
+
+
+        const submitButton =
+          document.querySelector(
+            ".submit"
+          );
+
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+          "POSTING...";
+
+
+        const { error } =
+          await db
+            .from("reviews")
+            .insert({
+
+              product_code:
+                productCode,
+
+              product_name:
+                productName,
+
+              reviewer_name:
+                reviewerName,
+
+              rating:
+                selectedRating,
+
+              review_text:
+                reviewText
+
+            });
+
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "POST REVIEW";
+
+
+        if (error) {
+
+          showMessage(
+            "Something went wrong. Please try again.",
+            "error"
+          );
+
+          return;
+
+        }
+
 
         showMessage(
-          "Please select a star rating.",
-          "error"
+          "✓ REVIEW POSTED",
+          "success"
         );
 
-        return;
-      }
 
-
-      const productValue =
-        document.getElementById("product").value;
-
-
-      if (!productValue) {
-
-        showMessage(
-          "Please choose a product.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      const [productCode, productName] =
-        productValue.split("|");
-
-
-      const reviewerName =
-        document.getElementById("name").value.trim();
-
-
-      const reviewText =
         document
-          .getElementById("reviewText")
-          .value
-          .trim();
+          .getElementById(
+            "reviewForm"
+          )
+          .reset();
 
 
-      const submitButton =
-        document.querySelector(".submit");
+        selectedRating = 0;
+
+        updateStars();
 
 
-      submitButton.disabled = true;
-      submitButton.textContent = "POSTING...";
+        setTimeout(() => {
 
+          closeReview();
 
-      const { error } = await db
-        .from("reviews")
-        .insert({
-          product_code: productCode,
-          product_name: productName,
-          reviewer_name: reviewerName,
-          rating: selectedRating,
-          review_text: reviewText
-        });
+          loadReviews();
 
+        }, 900);
 
-      submitButton.disabled = false;
-      submitButton.textContent = "POST REVIEW";
-
-
-      if (error) {
-
-        showMessage(
-          "Something went wrong. Please try again.",
-          "error"
-        );
-
-        return;
       }
+    );
 
 
-      showMessage(
-        "✓ Review posted successfully.",
-        "success"
-      );
-
-
-      document.getElementById("reviewForm").reset();
-
-      selectedRating = 0;
-
-      updateStars();
-
-
-      setTimeout(() => {
-
-        closeReview();
-
-        loadReviews();
-
-      }, 1000);
-
-    });
-
-
-  function showMessage(text, type) {
+  function showMessage(
+    text,
+    type
+  ) {
 
     const message =
-      document.getElementById("message");
+      document.getElementById(
+        "message"
+      );
+
 
     message.textContent = text;
 
@@ -810,11 +972,26 @@
   function escapeHTML(value) {
 
     return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
 
   }
 
