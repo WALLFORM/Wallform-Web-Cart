@@ -1,784 +1,827 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="See what WALLFORM customers have to say about their orders."
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>WALLFORM — Reviews</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
-    /* =========================
-       RESET
-    ========================== */
-
     * {
       box-sizing: border-box;
     }
 
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-
     body {
       margin: 0;
-      background: #000;
-      color: #fff;
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-      -webkit-font-smoothing: antialiased;
+      background: #fff;
+      color: #000;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-
-    button,
-    a {
-      font-family: inherit;
-    }
-
-
-    /* =========================
-       PAGE
-    ========================== */
-
-    .container {
-      width: 100%;
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 50px 25px 60px;
-    }
-
-
-    /* =========================
-       BRAND
-    ========================== */
-
-    .logo {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      line-height: 1;
-    }
-
-
-    .tagline {
-      margin-top: 7px;
-      color: #888;
-      font-size: 11px;
-      letter-spacing: 2px;
-    }
-
-
-    /* =========================
-       HEADER
-    ========================== */
-
-    .header {
-      margin-top: 48px;
-    }
-
-
-    .header h1 {
-      margin: 0;
-      font-size: 34px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-
-    .header p {
-      max-width: 520px;
-      margin: 14px 0 0;
-      color: #888;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-
-    /* =========================
-       RATING SUMMARY
-    ========================== */
-
-    .rating-summary {
+    header {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 20px 24px;
       display: flex;
       align-items: center;
-      gap: 22px;
-      margin-top: 35px;
-      padding: 22px;
-      border: 1px solid #2c2c2c;
+      justify-content: space-between;
     }
 
-
-    .rating-number {
-      font-size: 38px;
-      font-weight: 700;
-      line-height: 1;
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
     }
 
-
-    .rating-details {
-      min-width: 0;
+    .nav {
+      display: flex;
+      gap: 10px;
     }
 
-
-    .rating-stars {
-      font-size: 17px;
-      letter-spacing: 3px;
-      line-height: 1;
-    }
-
-
-    .rating-label {
-      margin-top: 8px;
-      color: #777;
+    .nav a {
+      text-decoration: none;
+      color: #000;
+      border: 1px solid #000;
+      padding: 9px 14px;
       font-size: 12px;
+      font-weight: 700;
     }
 
-
-    /* =========================
-       REVIEWS
-    ========================== */
-
-    .reviews {
-      margin-top: 30px;
+    main {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 55px 20px 80px;
     }
 
-
-    .review {
-      margin-bottom: 14px;
-      padding: 22px;
-      border: 1px solid #2c2c2c;
-      background: #050505;
+    .hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 25px;
+      margin-bottom: 45px;
     }
 
+    h1 {
+      font-size: 48px;
+      line-height: 1;
+      margin: 0 0 12px;
+      letter-spacing: -2.5px;
+    }
+
+    .sub {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .write-btn {
+      border: 0;
+      background: #000;
+      color: #fff;
+      padding: 15px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .summary {
+      border: 1px solid #ddd;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 35px;
+    }
+
+    .average {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .stars {
+      letter-spacing: 2px;
+      font-size: 20px;
+    }
+
+    .review-count {
+      color: #777;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .review-card {
+      border-bottom: 1px solid #ddd;
+      padding: 25px 0;
+    }
 
     .review-top {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
       gap: 15px;
+      margin-bottom: 8px;
     }
 
-
-    .review-stars {
-      font-size: 15px;
-      letter-spacing: 2px;
-      white-space: nowrap;
+    .reviewer {
+      font-weight: 800;
+      font-size: 14px;
     }
-
 
     .review-date {
-      color: #666;
-      font-size: 11px;
-      white-space: nowrap;
-    }
-
-
-    .review-name {
-      margin-top: 15px;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-
-    .review-product {
-      margin-top: 5px;
-      color: #777;
+      color: #888;
       font-size: 12px;
     }
 
+    .review-stars {
+      font-size: 17px;
+      letter-spacing: 2px;
+      margin-bottom: 9px;
+    }
+
+    .product {
+      display: inline-block;
+      border: 1px solid #ddd;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
     .review-text {
-      margin-top: 15px;
-      color: #ddd;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.6;
+      color: #333;
+      max-width: 700px;
     }
-
-
-    /* =========================
-       EMPTY STATE
-    ========================== */
 
     .empty {
-      padding: 45px 25px;
-      border: 1px solid #222;
       text-align: center;
-    }
-
-
-    .empty-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-
-    .empty-text {
-      max-width: 430px;
-      margin: 12px auto 0;
+      padding: 60px 20px;
+      border: 1px solid #ddd;
       color: #777;
-      font-size: 13px;
-      line-height: 1.7;
     }
 
+    /* MODAL */
 
-    /* =========================
-       ACTIONS
-    ========================== */
-
-    .actions {
-      margin-top: 30px;
-    }
-
-
-    .button {
-      display: flex;
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      display: none;
       align-items: center;
       justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .modal {
       width: 100%;
-      min-height: 54px;
-      padding: 16px;
-      border: 1px solid #fff;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
       background: #fff;
-      color: #000;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-decoration: none;
+      padding: 30px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .modal h2 {
+      margin: 0;
+      font-size: 25px;
+      letter-spacing: -1px;
+    }
+
+    .close {
+      border: 0;
+      background: none;
+      font-size: 26px;
       cursor: pointer;
-      transition:
-        background 0.15s ease,
-        color 0.15s ease;
     }
 
-
-    .button:hover {
-      background: #ddd;
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      margin: 20px 0 8px;
+      text-transform: uppercase;
     }
 
+    select,
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 13px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
 
-    .button.secondary {
-      margin-top: 10px;
-      border-color: #333;
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: #000;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+    }
+
+    .star-picker {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .star {
+      border: 0;
+      background: none;
+      padding: 0;
+      font-size: 38px;
+      color: #ccc;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .star.selected {
+      color: #000;
+    }
+
+    .submit {
+      width: 100%;
+      border: 0;
       background: #000;
       color: #fff;
+      padding: 15px;
+      margin-top: 25px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
     }
 
-
-    .button.secondary:hover {
-      background: #111;
-      border-color: #555;
-    }
-
-
-    /* =========================
-       FOOTER
-    ========================== */
-
-    .footer {
-      margin-top: 50px;
-      padding-top: 20px;
-      border-top: 1px solid #1f1f1f;
-      color: #555;
-      font-size: 11px;
-      line-height: 1.6;
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 13px;
       text-align: center;
     }
 
-
-    /* =========================
-       MOBILE
-    ========================== */
-
-    @media (max-width: 550px) {
-
-      .container {
-        padding: 35px 20px 50px;
-      }
-
-
-      .header {
-        margin-top: 40px;
-      }
-
-
-      .header h1 {
-        font-size: 30px;
-      }
-
-
-      .rating-summary {
-        gap: 18px;
-        padding: 19px;
-      }
-
-
-      .rating-number {
-        font-size: 34px;
-      }
-
-
-      .review {
-        padding: 19px;
-      }
-
-
-      .review-top {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-
-      .review-date {
-        white-space: normal;
-      }
-
+    .message.show {
+      display: block;
     }
 
+    .success {
+      background: #eef8ee;
+      color: #176117;
+    }
+
+    .error {
+      background: #fff0f0;
+      color: #8b0000;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        padding: 17px;
+      }
+
+      main {
+        padding: 35px 15px 60px;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .hero {
+        display: block;
+      }
+
+      .write-btn {
+        margin-top: 20px;
+        width: 100%;
+      }
+
+      .summary {
+        padding: 20px;
+      }
+
+      .modal {
+        padding: 22px;
+      }
+    }
   </style>
-
 </head>
-
 
 <body>
 
+<header>
+  <div class="logo">WALLFORM</div>
 
-  <main class="container">
+  <div class="nav">
+    <a href="https://wallform.my.canva.site/shop">SHOP</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div>
+      <h1>REVIEWS</h1>
+      <div class="sub">Real experiences from WALLFORM customers.</div>
+    </div>
+
+    <button class="write-btn" onclick="openReview()">
+      WRITE A REVIEW
+    </button>
+  </section>
+
+  <section class="summary">
+    <div class="average" id="average">—</div>
+
+    <div>
+      <div class="stars" id="summaryStars">☆☆☆☆☆</div>
+      <div class="review-count" id="reviewCount">
+        No reviews yet
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews"></section>
+
+</main>
 
 
-    <!-- =========================
-         BRAND
-    ========================== -->
+<!-- REVIEW MODAL -->
 
-    <header>
+<div class="overlay" id="overlay">
 
-      <div class="logo">
-        WALLFORM
+  <div class="modal">
+
+    <div class="modal-head">
+      <h2>WRITE A REVIEW</h2>
+
+      <button class="close" onclick="closeReview()">
+        ×
+      </button>
+    </div>
+
+    <form id="reviewForm">
+
+      <label for="product">
+        Product
+      </label>
+
+      <select id="product" required>
+        <option value="">Choose a product</option>
+
+        <option value="WF-002|Porsche 911 GT3RS Mini">
+          Porsche 911 GT3RS Mini
+        </option>
+
+        <option value="WF-003|F1 Car Mini">
+          F1 Car Mini
+        </option>
+
+        <option value="WF-004|Japanese Scenery Mini">
+          Japanese Scenery Mini
+        </option>
+
+        <option value="WF-005|Vintage Race Car Mini">
+          Vintage Race Car Mini
+        </option>
+
+        <option value="WF-006|Batmobile Mini">
+          Batmobile Mini
+        </option>
+
+        <option value="WF-007|Check Engine Logo">
+          Check Engine Logo
+        </option>
+
+        <option value="WF-008|Custom Name Plate">
+          Custom Name Plate
+        </option>
+
+        <option value="WF-009|Custom Prints">
+          Custom Prints
+        </option>
+      </select>
+
+
+      <label>
+        Rating
+      </label>
+
+      <div class="star-picker">
+
+        <button type="button" class="star" data-rating="1">☆</button>
+        <button type="button" class="star" data-rating="2">☆</button>
+        <button type="button" class="star" data-rating="3">☆</button>
+        <button type="button" class="star" data-rating="4">☆</button>
+        <button type="button" class="star" data-rating="5">☆</button>
+
       </div>
 
-      <div class="tagline">
-        DECOR YOUR WAY.
-      </div>
 
-    </header>
+      <label for="name">
+        Your name
+      </label>
 
-
-    <!-- =========================
-         PAGE HEADER
-    ========================== -->
-
-    <section class="header">
-
-      <h1>
-        Reviews
-      </h1>
-
-      <p>
-        Real feedback from WALLFORM customers.
-      </p>
-
-    </section>
-
-
-    <!-- =========================
-         RATING SUMMARY
-    ========================== -->
-
-    <section
-      id="ratingSummary"
-      class="rating-summary"
-      aria-label="Customer rating summary"
-    >
-
-      <div
-        id="ratingNumber"
-        class="rating-number"
+      <input
+        id="name"
+        maxlength="40"
+        placeholder="Your name"
+        required
       >
-        —
-      </div>
 
 
-      <div class="rating-details">
+      <label for="reviewText">
+        Your review
+      </label>
 
-        <div
-          id="ratingStars"
-          class="rating-stars"
-          aria-label="No ratings yet"
-        >
-          ☆☆☆☆☆
+      <textarea
+        id="reviewText"
+        maxlength="1000"
+        placeholder="Tell us what you think..."
+        required
+      ></textarea>
+
+
+      <button class="submit" type="submit">
+        POST REVIEW
+      </button>
+
+      <div class="message" id="message"></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* ==============================
+     SUPABASE
+  ============================== */
+
+  const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
+
+  const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+  /* ==============================
+     REVIEW UI
+  ============================== */
+
+  let selectedRating = 0;
+
+  const overlay = document.getElementById("overlay");
+
+  const stars = document.querySelectorAll(".star");
+
+
+  function openReview() {
+    overlay.classList.add("active");
+  }
+
+
+  function closeReview() {
+    overlay.classList.remove("active");
+  }
+
+
+  overlay.addEventListener("click", function(e) {
+
+    if (e.target === overlay) {
+      closeReview();
+    }
+
+  });
+
+
+  stars.forEach(star => {
+
+    star.addEventListener("click", function() {
+
+      selectedRating = Number(this.dataset.rating);
+
+      updateStars();
+
+    });
+
+  });
+
+
+  function updateStars() {
+
+    stars.forEach(star => {
+
+      const rating = Number(star.dataset.rating);
+
+      if (rating <= selectedRating) {
+
+        star.textContent = "★";
+        star.classList.add("selected");
+
+      } else {
+
+        star.textContent = "☆";
+        star.classList.remove("selected");
+
+      }
+
+    });
+
+  }
+
+
+  /* ==============================
+     LOAD REVIEWS
+  ============================== */
+
+  async function loadReviews() {
+
+    const container = document.getElementById("reviews");
+
+    container.innerHTML = "";
+
+    const { data, error } = await db
+      .from("reviews")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+
+    if (error) {
+
+      container.innerHTML = `
+        <div class="empty">
+          Reviews are temporarily unavailable.
         </div>
+      `;
+
+      return;
+    }
 
 
-        <div
-          id="ratingLabel"
-          class="rating-label"
-        >
-          No reviews yet
+    if (!data.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          No reviews yet.<br><br>
+          Be the first to review a WALLFORM product.
         </div>
+      `;
 
-      </div>
+      updateSummary([]);
 
-    </section>
-
-
-    <!-- =========================
-         REVIEWS
-    ========================== -->
-
-    <section
-      id="reviews"
-      class="reviews"
-      aria-label="Customer reviews"
-    ></section>
-
-
-    <!-- =========================
-         ACTIONS
-    ========================== -->
-
-    <section class="actions">
-
-      <a
-        class="button"
-        href="https://wallform.my.canva.site/shop"
-      >
-        SHOP WALLFORM
-      </a>
-
-
-      <a
-        class="button secondary"
-        href="https://wa.me/918500670741"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        CONTACT WALLFORM
-      </a>
-
-    </section>
-
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <footer class="footer">
-
-      WALLFORM — DECOR YOUR WAY.
-
-    </footer>
-
-
-  </main>
-
-
-
-  <script>
-
-    /* =========================
-       REVIEWS DATA
-    ==========================
-
-       ONLY ADD REAL CUSTOMER
-       REVIEWS HERE.
-
-       Example:
-
-       {
-         name: "Arjun",
-         product: "Porsche 911 GT3RS Mini",
-         rating: 5,
-         text: "Looks really clean!",
-         date: "September 2026"
-       }
-
-    ========================== */
-
-    const reviews = [
-
-      /*
-      {
-        name: "Customer Name",
-        product: "Product Name",
-        rating: 5,
-        text: "Customer review here.",
-        date: "September 2026"
-      }
-      */
-
-    ];
-
-
-    /* =========================
-       ELEMENTS
-    ========================== */
-
-    const reviewsElement =
-      document.getElementById("reviews");
-
-    const ratingNumberElement =
-      document.getElementById("ratingNumber");
-
-    const ratingStarsElement =
-      document.getElementById("ratingStars");
-
-    const ratingLabelElement =
-      document.getElementById("ratingLabel");
-
-
-    /* =========================
-       HELPERS
-    ========================== */
-
-    function getValidRating(rating) {
-
-      const value =
-        Number(rating);
-
-      if (!Number.isFinite(value)) {
-        return 0;
-      }
-
-      return Math.max(
-        0,
-        Math.min(5, Math.round(value))
-      );
-
+      return;
     }
 
 
-    function getStars(rating) {
-
-      const validRating =
-        getValidRating(rating);
-
-      return (
-        "★".repeat(validRating) +
-        "☆".repeat(5 - validRating)
-      );
-
-    }
+    updateSummary(data);
 
 
-    /* =========================
-       RATING SUMMARY
-    ========================== */
+    container.innerHTML = data.map(review => {
 
-    function renderRatingSummary() {
-
-      if (reviews.length === 0) {
-
-        ratingNumberElement.textContent =
-          "—";
-
-        ratingStarsElement.textContent =
-          "☆☆☆☆☆";
-
-        ratingStarsElement.setAttribute(
-          "aria-label",
-          "No ratings yet"
-        );
-
-        ratingLabelElement.textContent =
-          "No reviews yet";
-
-        return;
-
-      }
+      const date = new Date(
+        review.created_at
+      ).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
 
 
-      const totalRating =
-        reviews.reduce(
-          (total, review) => {
+      return `
+        <article class="review-card">
 
-            return total +
-              getValidRating(review.rating);
+          <div class="review-top">
 
-          },
-          0
-        );
+            <div class="reviewer">
+              ${escapeHTML(review.reviewer_name)}
+            </div>
 
-
-      const average =
-        totalRating /
-        reviews.length;
-
-
-      ratingNumberElement.textContent =
-        average.toFixed(1);
-
-
-      ratingStarsElement.textContent =
-        getStars(Math.round(average));
-
-
-      ratingStarsElement.setAttribute(
-        "aria-label",
-        `${average.toFixed(1)} out of 5 stars`
-      );
-
-
-      ratingLabelElement.textContent =
-        `${reviews.length} ${
-          reviews.length === 1
-            ? "review"
-            : "reviews"
-        }`;
-
-    }
-
-
-    /* =========================
-       REVIEW RENDERING
-    ========================== */
-
-    function renderReviews() {
-
-      if (reviews.length === 0) {
-
-        reviewsElement.innerHTML = `
-
-          <div class="empty">
-
-            <h2 class="empty-title">
-              Be one of the first.
-            </h2>
-
-            <p class="empty-text">
-              WALLFORM is just getting started.
-              Customer reviews will appear here
-              as real orders come in.
-            </p>
+            <div class="review-date">
+              ${date}
+            </div>
 
           </div>
 
-        `;
+
+          <div class="review-stars">
+            ${"★".repeat(review.rating)}
+            ${"☆".repeat(5 - review.rating)}
+          </div>
+
+
+          <div class="product">
+            ${escapeHTML(review.product_name)}
+          </div>
+
+
+          <div class="review-text">
+            ${escapeHTML(review.review_text)}
+          </div>
+
+        </article>
+      `;
+
+    }).join("");
+
+  }
+
+
+  function updateSummary(reviews) {
+
+    const count = reviews.length;
+
+    const average =
+      reviews.reduce(
+        (sum, review) => sum + review.rating,
+        0
+      ) / count;
+
+
+    document.getElementById("average").textContent =
+      average.toFixed(1);
+
+
+    document.getElementById("summaryStars").textContent =
+      "★".repeat(Math.round(average)) +
+      "☆".repeat(5 - Math.round(average));
+
+
+    document.getElementById("reviewCount").textContent =
+      count === 1
+        ? "1 review"
+        : `${count} reviews`;
+
+  }
+
+
+  /* ==============================
+     SUBMIT REVIEW
+  ============================== */
+
+  document
+    .getElementById("reviewForm")
+    .addEventListener("submit", async function(e) {
+
+      e.preventDefault();
+
+
+      const message =
+        document.getElementById("message");
+
+
+      if (!selectedRating) {
+
+        showMessage(
+          "Please select a star rating.",
+          "error"
+        );
 
         return;
-
       }
 
 
-      reviewsElement.innerHTML =
-        reviews
-          .map(review => {
-
-            const rating =
-              getValidRating(review.rating);
+      const productValue =
+        document.getElementById("product").value;
 
 
-            const name =
-              escapeHTML(
-                review.name || "Customer"
-              );
+      if (!productValue) {
+
+        showMessage(
+          "Please choose a product.",
+          "error"
+        );
+
+        return;
+      }
 
 
-            const product =
-              escapeHTML(
-                review.product || "WALLFORM"
-              );
+      const [productCode, productName] =
+        productValue.split("|");
 
 
-            const text =
-              escapeHTML(
-                review.text || ""
-              );
+      const reviewerName =
+        document.getElementById("name").value.trim();
 
 
-            const date =
-              escapeHTML(
-                review.date || ""
-              );
+      const reviewText =
+        document
+          .getElementById("reviewText")
+          .value
+          .trim();
 
 
-            return `
-
-              <article class="review">
-
-                <div class="review-top">
-
-                  <div
-                    class="review-stars"
-                    aria-label="${rating} out of 5 stars"
-                  >
-                    ${getStars(rating)}
-                  </div>
-
-                  <div class="review-date">
-                    ${date}
-                  </div>
-
-                </div>
+      const submitButton =
+        document.querySelector(".submit");
 
 
-                <div class="review-name">
-                  ${name}
-                </div>
+      submitButton.disabled = true;
+      submitButton.textContent = "POSTING...";
 
 
-                <div class="review-product">
-                  ${product}
-                </div>
+      const { error } = await db
+        .from("reviews")
+        .insert({
+          product_code: productCode,
+          product_name: productName,
+          reviewer_name: reviewerName,
+          rating: selectedRating,
+          review_text: reviewText
+        });
 
 
-                <div class="review-text">
-                  “${text}”
-                </div>
-
-              </article>
-
-            `;
-
-          })
-          .join("");
-
-    }
+      submitButton.disabled = false;
+      submitButton.textContent = "POST REVIEW";
 
 
-    /* =========================
-       HTML ESCAPING
-    ========================== */
+      if (error) {
 
-    function escapeHTML(value) {
+        showMessage(
+          "Something went wrong. Please try again.",
+          "error"
+        );
 
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
+        return;
+      }
 
 
-    /* =========================
-       START
-    ========================== */
+      showMessage(
+        "✓ Review posted successfully.",
+        "success"
+      );
 
-    renderRatingSummary();
 
-    renderReviews();
+      document.getElementById("reviewForm").reset();
 
-  </script>
+      selectedRating = 0;
 
+      updateStars();
+
+
+      setTimeout(() => {
+
+        closeReview();
+
+        loadReviews();
+
+      }, 1000);
+
+    });
+
+
+  function showMessage(text, type) {
+
+    const message =
+      document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className =
+      "message show " + type;
+
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  loadReviews();
+
+</script>
 
 </body>
-
 </html>
