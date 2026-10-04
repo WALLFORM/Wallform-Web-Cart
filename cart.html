@@ -140,6 +140,60 @@
 
 
     /* =========================
+       COLOR
+    ========================== */
+
+    .color-control {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+    }
+
+
+    .color-label {
+
+      font-size: 11px;
+
+      color: #888;
+
+      letter-spacing: 0.5px;
+
+    }
+
+
+    .color-select {
+
+      height: 38px;
+
+      padding: 0 10px;
+
+      background: #000;
+
+      color: #fff;
+
+      border: 1px solid #555;
+
+      font-size: 13px;
+
+      cursor: pointer;
+
+      outline: none;
+
+    }
+
+
+    .color-select:focus {
+
+      border-color: #fff;
+
+    }
+
+
+    /* =========================
        QUANTITY
     ========================== */
 
@@ -344,7 +398,7 @@
        MOBILE
     ========================== */
 
-    @media (max-width: 550px) {
+    @media (max-width: 650px) {
 
       .container {
 
@@ -367,6 +421,15 @@
         align-items: flex-end;
 
         gap: 10px;
+
+      }
+
+
+      .color-control {
+
+        width: 100%;
+
+        justify-content: flex-end;
 
       }
 
@@ -534,6 +597,49 @@ function getCart() {
 
 
 /* =========================
+   GET COLORS
+========================= */
+
+function getColors() {
+
+  try {
+
+    const saved =
+      localStorage.getItem("wallformColors");
+
+
+    if (!saved) {
+      return {};
+    }
+
+
+    const parsed =
+      JSON.parse(saved);
+
+
+    if (
+      parsed &&
+      typeof parsed === "object"
+    ) {
+
+      return parsed;
+
+    }
+
+
+    return {};
+
+  } catch (error) {
+
+    return {};
+
+  }
+
+}
+
+
+
+/* =========================
    SAVE CART
 ========================= */
 
@@ -542,6 +648,21 @@ function saveCart(cart) {
   localStorage.setItem(
     "wallformCart",
     JSON.stringify(cart)
+  );
+
+}
+
+
+
+/* =========================
+   SAVE COLORS
+========================= */
+
+function saveColors(colors) {
+
+  localStorage.setItem(
+    "wallformColors",
+    JSON.stringify(colors)
   );
 
 }
@@ -558,6 +679,10 @@ function removeCart() {
     "wallformCart"
   );
 
+  localStorage.removeItem(
+    "wallformColors"
+  );
+
 }
 
 
@@ -570,8 +695,59 @@ let cart =
   getCart();
 
 
+let colors =
+  getColors();
+
+
 const cartElement =
   document.getElementById("cart");
+
+
+
+/* =========================
+   DEFAULT COLORS
+========================= */
+
+Object.keys(cart).forEach(code => {
+
+  if (
+    products[code] &&
+    !colors[code]
+  ) {
+
+    colors[code] =
+      "Black";
+
+  }
+
+});
+
+
+saveColors(colors);
+
+
+
+/* =========================
+   CHANGE COLOR
+========================= */
+
+function changeColor(
+  code,
+  color
+) {
+
+  if (!products[code]) {
+    return;
+  }
+
+
+  colors[code] =
+    color;
+
+
+  saveColors(colors);
+
+}
 
 
 
@@ -657,6 +833,10 @@ function renderCart() {
       itemTotal;
 
 
+    const selectedColor =
+      colors[code] || "Black";
+
+
     html += `
 
       <div class="item">
@@ -681,6 +861,41 @@ function renderCart() {
 
         <div class="item-right">
 
+
+          <!-- COLOR -->
+
+          <div class="color-control">
+
+            <span class="color-label">
+              COLOR
+            </span>
+
+            <select
+              class="color-select"
+              onchange="changeColor('${code}', this.value)"
+            >
+
+              <option
+                value="Black"
+                ${selectedColor === "Black" ? "selected" : ""}
+              >
+                Black
+              </option>
+
+              <option
+                value="White"
+                ${selectedColor === "White" ? "selected" : ""}
+              >
+                White
+              </option>
+
+            </select>
+
+          </div>
+
+
+
+          <!-- QUANTITY -->
 
           <div class="quantity-control">
 
@@ -748,7 +963,7 @@ function renderCart() {
   const mainButtonText =
     hasCustomProduct
       ? "CUSTOMIZE"
-      : "CHECK SHIPPING";
+      : "CHECKOUT";
 
 
 
@@ -847,15 +1062,27 @@ function changeQuantity(
 
     delete cart[code];
 
+    delete colors[code];
+
   } else {
 
     cart[code] =
       newQuantity;
 
+
+    if (!colors[code]) {
+
+      colors[code] =
+        "Black";
+
+    }
+
   }
 
 
   saveCart(cart);
+
+  saveColors(colors);
 
   renderCart();
 
@@ -908,7 +1135,7 @@ function goToCheckout() {
 
   /*
     NORMAL PRODUCTS
-    Go directly to shipping.
+    Go directly to checkout.
   */
 
   window.location.href =
@@ -923,12 +1150,6 @@ function goToCheckout() {
 ========================= */
 
 function closeCart() {
-
-  /*
-    Do NOT redirect anywhere.
-
-    Just close this cart tab.
-  */
 
   window.close();
 
@@ -945,6 +1166,8 @@ function clearCart() {
   removeCart();
 
   cart = {};
+
+  colors = {};
 
   renderCart();
 
