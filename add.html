@@ -13,12 +13,9 @@
 
 </head>
 
-
 <body>
 
-
 <script>
-
 
 const params =
   new URLSearchParams(
@@ -30,24 +27,22 @@ const code =
   params.get("add");
 
 
-
 /* =========================
    VALID PRODUCTS
 ========================= */
 
 const validProducts = [
 
+  "WF-001",
   "WF-002",
   "WF-003",
   "WF-004",
   "WF-005",
   "WF-006",
   "WF-007",
-  "WF-008",
-  "WF-009"
+  "WF-008"
 
 ];
-
 
 
 /* =========================
@@ -112,7 +107,6 @@ function getCart() {
 }
 
 
-
 /* =========================
    SAVE CART
 ========================= */
@@ -125,7 +119,6 @@ function saveCart(cart) {
   );
 
 }
-
 
 
 /* =========================
@@ -149,7 +142,6 @@ if (
 }
 
 
-
 /* =========================
    GO TO CART
 ========================= */
@@ -158,9 +150,7 @@ window.location.replace(
   "https://wallform.github.io/Wallform-Web-Cart/cart.html"
 );
 
-
 </script>
-
 
 </body>
 </html>
