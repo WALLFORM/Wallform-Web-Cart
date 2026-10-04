@@ -491,42 +491,42 @@
 
 const products = {
 
-  "WF-002": {
+  "WF-001": {
     name: "Porsche 911 GT3RS Mini",
     price: 99
   },
 
-  "WF-003": {
+  "WF-002": {
     name: "F1 Car Mini",
     price: 99
   },
 
-  "WF-004": {
+  "WF-003": {
     name: "Japanese Scenery Mini",
     price: 99
   },
 
-  "WF-005": {
+  "WF-004": {
     name: "Vintage Race Car Mini",
     price: 99
   },
 
-  "WF-006": {
+  "WF-005": {
     name: "Batmobile Mini",
     price: 99
   },
 
-  "WF-007": {
+  "WF-006": {
     name: "Check Engine Logo",
     price: 119
   },
 
-  "WF-008": {
+  "WF-007": {
     name: "Custom Name Plate",
     price: 149
   },
 
-  "WF-009": {
+  "WF-008": {
     name: "Custom Prints",
     price: 220
   }
@@ -670,7 +670,7 @@ function saveColors(colors) {
 
 
 /* =========================
-   CLEAR CART
+   REMOVE CART
 ========================= */
 
 function removeCart() {
@@ -862,13 +862,12 @@ function renderCart() {
         <div class="item-right">
 
 
-          <!-- COLOR -->
-
           <div class="color-control">
 
             <span class="color-label">
               COLOR
             </span>
+
 
             <select
               class="color-select"
@@ -882,6 +881,7 @@ function renderCart() {
                 Black
               </option>
 
+
               <option
                 value="White"
                 ${selectedColor === "White" ? "selected" : ""}
@@ -894,8 +894,6 @@ function renderCart() {
           </div>
 
 
-
-          <!-- QUANTITY -->
 
           <div class="quantity-control">
 
@@ -912,9 +910,7 @@ function renderCart() {
 
 
             <div class="quantity-number">
-
               ${quantity}
-
             </div>
 
 
@@ -956,8 +952,8 @@ function renderCart() {
   ========================== */
 
   const hasCustomProduct =
-    !!cart["WF-008"] ||
-    !!cart["WF-009"];
+    Number(cart["WF-007"]) > 0 ||
+    Number(cart["WF-008"]) > 0;
 
 
   const mainButtonText =
@@ -968,7 +964,7 @@ function renderCart() {
 
 
   /* =========================
-     TOTAL + BUTTONS
+     TOTAL
   ========================== */
 
   html += `
@@ -1099,11 +1095,11 @@ function goToCheckout() {
 
   /*
     CUSTOM NAME PLATE
-    Always customize first.
+    WF-007
   */
 
   if (
-    Number(cart["WF-008"]) > 0
+    Number(cart["WF-007"]) > 0
   ) {
 
     window.location.href =
@@ -1117,11 +1113,11 @@ function goToCheckout() {
 
   /*
     CUSTOM PRINT
-    Customize first.
+    WF-008
   */
 
   if (
-    Number(cart["WF-009"]) > 0
+    Number(cart["WF-008"]) > 0
   ) {
 
     window.location.href =
@@ -1135,7 +1131,6 @@ function goToCheckout() {
 
   /*
     NORMAL PRODUCTS
-    Go directly to checkout.
   */
 
   window.location.href =
