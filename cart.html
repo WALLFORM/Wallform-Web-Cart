@@ -548,7 +548,9 @@ function getCart() {
 
 
     if (!saved) {
+
       return {};
+
     }
 
 
@@ -563,8 +565,12 @@ function getCart() {
 
       parsed.forEach(code => {
 
-        converted[code] =
-          (converted[code] || 0) + 1;
+        if (products[code]) {
+
+          converted[code] =
+            (converted[code] || 0) + 1;
+
+        }
 
       });
 
@@ -576,7 +582,8 @@ function getCart() {
 
     if (
       parsed &&
-      typeof parsed === "object"
+      typeof parsed === "object" &&
+      !Array.isArray(parsed)
     ) {
 
       return parsed;
@@ -609,7 +616,9 @@ function getColors() {
 
 
     if (!saved) {
+
       return {};
+
     }
 
 
@@ -619,7 +628,8 @@ function getColors() {
 
     if (
       parsed &&
-      typeof parsed === "object"
+      typeof parsed === "object" &&
+      !Array.isArray(parsed)
     ) {
 
       return parsed;
@@ -645,10 +655,21 @@ function getColors() {
 
 function saveCart(cart) {
 
-  localStorage.setItem(
-    "wallformCart",
-    JSON.stringify(cart)
-  );
+  try {
+
+    localStorage.setItem(
+      "wallformCart",
+      JSON.stringify(cart)
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Could not save cart:",
+      error
+    );
+
+  }
 
 }
 
@@ -660,10 +681,21 @@ function saveCart(cart) {
 
 function saveColors(colors) {
 
-  localStorage.setItem(
-    "wallformColors",
-    JSON.stringify(colors)
-  );
+  try {
+
+    localStorage.setItem(
+      "wallformColors",
+      JSON.stringify(colors)
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Could not save colors:",
+      error
+    );
+
+  }
 
 }
 
@@ -712,6 +744,7 @@ Object.keys(cart).forEach(code => {
 
   if (
     products[code] &&
+    Number(cart[code]) > 0 &&
     !colors[code]
   ) {
 
@@ -737,7 +770,19 @@ function changeColor(
 ) {
 
   if (!products[code]) {
+
     return;
+
+  }
+
+
+  if (
+    color !== "Black" &&
+    color !== "White"
+  ) {
+
+    return;
+
   }
 
 
@@ -1038,7 +1083,9 @@ function changeQuantity(
 
 
   if (!products[code]) {
+
     return;
+
   }
 
 
@@ -1092,6 +1139,7 @@ function changeQuantity(
 
 function goToCheckout() {
 
+
   /* =========================
      CUSTOM NAME PLATE
      WF-007
@@ -1107,6 +1155,7 @@ function goToCheckout() {
     return;
 
   }
+
 
 
   /* =========================
@@ -1126,38 +1175,10 @@ function goToCheckout() {
   }
 
 
+
   /* =========================
      NORMAL PRODUCTS
   ========================== */
-
-  window.location.href =
-    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
-
-}
-
-
-
-  /*
-    CUSTOM PRINT
-    WF-008
-  */
-
-  if (
-    Number(cart["WF-008"]) > 0
-  ) {
-
-    window.location.href =
-      "custom-print.html";
-
-    return;
-
-  }
-
-
-
-  /*
-    NORMAL PRODUCTS
-  */
 
   window.location.href =
     "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
