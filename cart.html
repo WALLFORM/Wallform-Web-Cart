@@ -1092,22 +1092,48 @@ function changeQuantity(
 
 function goToCheckout() {
 
-
-  /*
-    CUSTOM NAME PLATE
-    WF-007
-  */
+  /* =========================
+     CUSTOM NAME PLATE
+     WF-007
+  ========================== */
 
   if (
     Number(cart["WF-007"]) > 0
   ) {
 
     window.location.href =
-      "nameplate.html";
+      "https://wallform.github.io/Wallform-Web-Cart/nameplate.html";
 
     return;
 
   }
+
+
+  /* =========================
+     CUSTOM PRINT
+     WF-008
+  ========================== */
+
+  if (
+    Number(cart["WF-008"]) > 0
+  ) {
+
+    window.location.href =
+      "https://wallform.github.io/Wallform-Web-Cart/custom-print.html";
+
+    return;
+
+  }
+
+
+  /* =========================
+     NORMAL PRODUCTS
+  ========================== */
+
+  window.location.href =
+    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
+
+}
 
 
 
