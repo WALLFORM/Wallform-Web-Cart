@@ -176,7 +176,10 @@
     <div id="nameFields"></div>
 
 
-    <button onclick="continueToCustomization()">
+    <button
+      type="button"
+      onclick="continueToCustomization()"
+    >
       CONTINUE
     </button>
 
@@ -215,7 +218,7 @@
       <br><br>
 
       You can also request a different size if you need one.
-      Only black & white colours are available.(More Coming Soon).
+      Only black & white colours are available. (More Coming Soon).
 
       <br><br>
 
@@ -236,12 +239,16 @@
     ></textarea>
 
 
-    <button onclick="continueFromCustomization()">
+    <button
+      type="button"
+      onclick="continueFromCustomization()"
+    >
       CONTINUE
     </button>
 
 
     <button
+      type="button"
       class="back-button"
       onclick="goBackToNames()"
     >
@@ -283,16 +290,17 @@ function getCart() {
     }
 
 
-    const cart =
+    const parsed =
       JSON.parse(saved);
 
 
     if (
-      cart &&
-      typeof cart === "object"
+      parsed &&
+      typeof parsed === "object" &&
+      !Array.isArray(parsed)
     ) {
 
-      return cart;
+      return parsed;
 
     }
 
@@ -315,16 +323,22 @@ const cart =
 
 /* =========================
    CHECK NAME PLATE
+   WF-007
 ========================= */
 
 const quantity =
-  Number(cart["WF-008"]) || 0;
+  Number(cart["WF-007"]) || 0;
 
+
+/*
+   IMPORTANT:
+   WF-007 = CUSTOM NAME PLATE
+*/
 
 if (quantity <= 0) {
 
   window.location.href =
-    "checkout.html";
+    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
 
 }
 
@@ -524,7 +538,6 @@ function continueToCustomization() {
     "block";
 
 
-
   window.scrollTo(
     0,
     0
@@ -631,13 +644,16 @@ function continueFromCustomization() {
 
 
   /* =========================
-     CHECK FOR CUSTOM PRINTS
+     CHECK FOR CUSTOM PRINT
+     WF-008
   ========================== */
 
-  if (cart["WF-009"]) {
+  if (
+    Number(cart["WF-008"]) > 0
+  ) {
 
     window.location.href =
-      "custom-print.html";
+      "https://wallform.github.io/Wallform-Web-Cart/custom-print.html";
 
     return;
 
@@ -646,278 +662,11 @@ function continueFromCustomization() {
 
 
   /* =========================
-     ONLY NAME PLATE
-  ========================== */
-
-  openWhatsAppOrder();
-
-}
-
-
-
-/* =========================
-   WHATSAPP ORDER
-========================= */
-
-function openWhatsAppOrder() {
-
-  const checkoutData =
-    JSON.parse(
-      localStorage.getItem(
-        "wallformCheckoutData"
-      ) || "{}"
-    );
-
-
-  const customData =
-    JSON.parse(
-      localStorage.getItem(
-        "wallformCustomData"
-      ) || "{}"
-    );
-
-
-  const currentCart =
-    getCart();
-
-
-
-  /* =========================
-     PRODUCT MAP
-  ========================== */
-
-  const products = {
-
-    "WF-002": {
-      name: "Porsche 911 GT3RS Mini",
-      price: 99
-    },
-
-    "WF-003": {
-      name: "F1 Car Mini",
-      price: 99
-    },
-
-    "WF-004": {
-      name: "Japanese Scenery Mini",
-      price: 99
-    },
-
-    "WF-005": {
-      name: "Vintage Race Car Mini",
-      price: 99
-    },
-
-    "WF-006": {
-      name: "Batmobile Mini",
-      price: 99
-    },
-
-    "WF-007": {
-      name: "Check Engine Logo",
-      price: 119
-    },
-
-    "WF-008": {
-      name: "Custom Name Plate",
-      price: 149
-    },
-
-    "WF-009": {
-      name: "Custom Prints",
-      price: 220
-    }
-
-  };
-
-
-
-  const productsTotal =
-    Number(
-      checkoutData.productsTotal
-    ) || 0;
-
-
-  const shipping =
-    Number(
-      checkoutData.shippingPrice
-    ) || 0;
-
-
-  const grandTotal =
-    Number(
-      checkoutData.grandTotal
-    ) || 0;
-
-
-
-  /* =========================
-     START MESSAGE
-  ========================== */
-
-  let message =
-    "🖤 WALLFORM ORDER\n\n";
-
-
-  message +=
-    "━━━━━━━━━━━━━━━━━━\n" +
-    "CUSTOMER DETAILS\n" +
-    "━━━━━━━━━━━━━━━━━━\n";
-
-
-  message +=
-    "Name: " +
-    checkoutData.fullName +
-    "\n";
-
-
-  message +=
-    "Phone: " +
-    checkoutData.phone +
-    "\n";
-
-
-  message +=
-    "Address: " +
-    checkoutData.house +
-    ", " +
-    checkoutData.street +
-    ", " +
-    checkoutData.area +
-    ", " +
-    checkoutData.city +
-    ", " +
-    checkoutData.state +
-    " - " +
-    checkoutData.pin +
-    "\n\n";
-
-
-
-  /* =========================
-     ORDER
-  ========================== */
-
-  message +=
-    "━━━━━━━━━━━━━━━━━━\n" +
-    "ORDER\n" +
-    "━━━━━━━━━━━━━━━━━━\n";
-
-
-  for (
-    const code in currentCart
-  ) {
-
-    if (!products[code]) {
-      continue;
-    }
-
-
-    const itemQuantity =
-      Number(
-        currentCart[code]
-      ) || 0;
-
-
-    if (itemQuantity <= 0) {
-      continue;
-    }
-
-
-    message +=
-      itemQuantity +
-      " × " +
-      products[code].name +
-      " (" +
-      code +
-      ") — ₹" +
-      (
-        products[code].price *
-        itemQuantity
-      ).toFixed(2) +
-      "\n";
-
-  }
-
-
-
-  /* =========================
-     TOTAL
-  ========================== */
-
-  message +=
-    "\nProducts Total: ₹" +
-    productsTotal.toFixed(2) +
-    "\n";
-
-
-  message +=
-    "Shipping: ₹" +
-    shipping.toFixed(2) +
-    "\n";
-
-
-  message +=
-    "TOTAL: ₹" +
-    grandTotal.toFixed(2) +
-    "\n\n";
-
-
-
-  /* =========================
-     CUSTOM NAME PLATE
-  ========================== */
-
-  message +=
-    "━━━━━━━━━━━━━━━━━━\n" +
-    "CUSTOM NAME PLATE\n" +
-    "━━━━━━━━━━━━━━━━━━\n";
-
-
-  const names =
-    customData.namePlate?.names ||
-    [];
-
-
-  names.forEach(
-    function(name, index) {
-
-      message +=
-        "Name " +
-        (index + 1) +
-        ": " +
-        name +
-        "\n";
-
-    }
-  );
-
-
-  message +=
-    "\n";
-
-
-  message +=
-    "Requests / Modifications: " +
-    (
-      customData.namePlate?.requests ||
-      "None"
-    ) +
-    "\n\n";
-
-
-  message +=
-    "Please confirm the order and payment details.";
-
-
-
-  /* =========================
-     OPEN WHATSAPP
+     GO TO CHECKOUT
   ========================== */
 
   window.location.href =
-    "https://wa.me/918522070741?text=" +
-    encodeURIComponent(message);
+    "https://wallform.github.io/Wallform-Web-Cart/checkout.html";
 
 }
 
