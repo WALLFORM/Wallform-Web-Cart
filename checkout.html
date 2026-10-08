@@ -1132,13 +1132,18 @@ function openWhatsAppOrder() {
 
       if (names.length > 0) {
 
-        message +=
-          "Custom Name: " +
-          names.join(", ") +
-          "\n";
+  names.forEach(function(name, index) {
 
-      }
+    message +=
+      "NAME " +
+      (index + 1) +
+      ": " +
+      name +
+      "\n";
 
+  });
+
+}
 
       if (requests.trim()) {
 
