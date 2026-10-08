@@ -987,6 +987,14 @@ function openWhatsAppOrder() {
     getColors();
 
 
+  const customData =
+    JSON.parse(
+      localStorage.getItem(
+        "wallformCustomData"
+      ) || "{}"
+    );
+
+
   const productsTotal =
     Number(
       checkoutData.productsTotal
@@ -1097,7 +1105,80 @@ function openWhatsAppOrder() {
       color +
       " — ₹" +
       itemTotal.toFixed(2) +
-      "\n\n";
+      "\n";
+
+
+    /* =========================
+       CUSTOM NAME PLATE
+    ========================== */
+
+    if (
+      code === "WF-007" &&
+      customData.namePlate
+    ) {
+
+      const names =
+        Array.isArray(
+          customData.namePlate.names
+        )
+          ? customData.namePlate.names
+          : [];
+
+
+      const requests =
+        customData.namePlate.requests ||
+        "";
+
+
+      if (names.length > 0) {
+
+        message +=
+          "Custom Name: " +
+          names.join(", ") +
+          "\n";
+
+      }
+
+
+      if (requests.trim()) {
+
+        message +=
+          "Requested Mods: " +
+          requests.trim() +
+          "\n";
+
+      }
+
+    }
+
+
+    /* =========================
+       CUSTOM PRINT
+    ========================== */
+
+    if (
+      code === "WF-008" &&
+      customData.customPrint
+    ) {
+
+      const requests =
+        customData.customPrint.requests ||
+        "";
+
+
+      if (requests.trim()) {
+
+        message +=
+          "Requested Mods: " +
+          requests.trim() +
+          "\n";
+
+      }
+
+    }
+
+
+    message += "\n";
 
   }
 
